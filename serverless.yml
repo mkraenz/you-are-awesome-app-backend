@@ -1,0 +1,27 @@
+service: yaa-report-inappropriate
+# app and org for use with dashboard.serverless.com
+app: youareawesomeapp-report-inappropriate
+org: prosingularity
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-plugin-typescript
+  - serverless-offline # must come after typescript
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: eu-central-1
+  stage: prod
+
+functions:
+  reportInappropriate:
+    handler: src/index.handler
+    events:
+      - http:
+          path: "/"
+          method: post
