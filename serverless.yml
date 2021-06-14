@@ -24,11 +24,21 @@ functions:
       - http:
           path: "/reportinappropriate/"
           method: post
+
   registerPushNotif:
     handler: src/register-push-notification.handler
     events:
       - http:
           path: "/push-notifications/register/"
+          method: post
+    environment:
+      CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
+
+  unregisterPushNotif:
+    handler: src/unregister-push-notification.handler
+    events:
+      - http:
+          path: "/push-notifications/unregister/"
           method: post
     environment:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"

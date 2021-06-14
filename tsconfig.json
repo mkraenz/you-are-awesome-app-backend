@@ -7,7 +7,7 @@
         "strict": true,
         "moduleResolution": "node",
         "sourceMap": false,
-        "outDir": "dist",
+        "outDir": ".build",
         "baseUrl": ".",
         "experimentalDecorators": true
     },

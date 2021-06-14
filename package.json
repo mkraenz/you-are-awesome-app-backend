@@ -1,9 +1,8 @@
 {
     "name": "you-are-awesome-app-serverless-backend",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "Mirco Kraenz",
     "license": "UNLICENSED",
-    "main": "dist/report-inappropriate.js",
     "scripts": {
         "build": "tsc",
         "clean": "del-cli dist build",
@@ -12,7 +11,6 @@
         "deploy:test": "serverless offline",
         "deploy:test:verbose": "serverless offline --printOutput",
         "dev": "npm run deploy:test",
-        "start": "ts-node src/report-inappropriate.ts",
         "test": "jest"
     },
     "dependencies": {
@@ -20,14 +18,16 @@
         "class-validator": "^0.12.2",
         "crypto-js": "^4.0.0",
         "expo-server-sdk": "^3.5.1",
+        "lodash.pick": "^4.4.0",
         "node-fetch": "^2.6.0",
         "nodemailer": "^6.4.11"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.61",
-        "@types/crypto-js": "^3.1.47",
+        "@types/crypto-js": "^4.0.1",
         "@types/jest": "^26.0.10",
-        "@types/node": "8.x",
+        "@types/lodash.pick": "^4.4.6",
+        "@types/node": "12.x",
         "@types/node-fetch": "^2.5.4",
         "@types/nodemailer": "^6.4.0",
         "@typescript-eslint/eslint-plugin": "^2.3.1",
@@ -36,7 +36,7 @@
         "jest": "^26.4.1",
         "prettier": "^1.18.2",
         "serverless-dotenv-plugin": "^3.0.0",
-        "serverless-offline": "^6.7.0",
+        "serverless-offline": "^6.9.0",
         "serverless-plugin-typescript": "^1.1.9",
         "ts-jest": "^26.3.0",
         "ts-node": "^8.4.1",

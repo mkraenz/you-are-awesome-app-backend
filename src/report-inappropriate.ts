@@ -25,16 +25,19 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
             },
         };
     } catch (error) {
-        console.error({ error });
-        console.error(error.message);
-        return {
-            statusCode: "400",
-            body: error.message,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
+        console.error(error);
+        return respond(500, error);
     }
+};
+
+const respond = (statusCode: number, body: object | string) => {
+    return {
+        statusCode,
+        body: JSON.stringify(body),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    };
 };
 
 const getTransport = ({ host, port, useSsl, user, password }: EmailConfig) => {

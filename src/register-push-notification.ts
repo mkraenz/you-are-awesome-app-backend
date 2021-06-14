@@ -1,9 +1,10 @@
 import { addCron } from "./cron/addCron";
 import { editCronJob } from "./cron/editCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
-import { encrypt, hash } from "./crypto";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
 import { isCronTime } from "./cron/isCrontime";
+import { encrypt, hash } from "./crypto";
+import { respond } from "./utils/respond";
 
 export async function handler(
     // TODO: event is external so we cannot control it's shape => validate at runtime too
@@ -11,17 +12,6 @@ export async function handler(
     context: never,
     callback: Function
 ) {
-    console.log("Received event:", JSON.stringify(event, null, 2));
-
-    const done = (err: Error | null, resBody?: object) =>
-        callback(null, {
-            statusCode: err ? "400" : "200",
-            body: err ? err.message : JSON.stringify(resBody),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
     try {
         const body: {
             token: string;
@@ -39,9 +29,10 @@ export async function handler(
             ? await editCronJob(wantedCronJob.cron_job_id, crontime)
             : await addCron(hashedToken, encryptedToken, crontime);
         const resBodyObj = { message: "Success", cronJobId };
-        return done(null, resBodyObj);
+        return respond(200, resBodyObj);
     } catch (error) {
-        return done(error);
+        console.error(error);
+        return respond(500, error);
     }
 }
 
