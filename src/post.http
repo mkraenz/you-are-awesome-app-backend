@@ -1,4 +1,14 @@
 POST http://localhost:3000/prod
 Content-Type: application/json
 
-{"messageId":"mymessage-bla", "reason": "bad content", "comment": "testme"}
+{"messageId":"test messsage id", "reason": "bad content", "comment": "testme"}
+
+### 
+POST http://localhost:3000/prod/push-notifications/register
+Content-Type: application/json
+
+{
+    "token": "ExponentPushToken[123456]",
+    "hour": 4,
+    "minute": 50
+}

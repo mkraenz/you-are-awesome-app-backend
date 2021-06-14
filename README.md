@@ -1,13 +1,16 @@
-# Backend for user reported content of You are Awesome App! Daily Motivation Up
+# Serverless Backend for You are Awesome App! Daily Motivation Up
 
 Awesome!
-Sends a notification email on user reported content (i.e. inappropriate or objectionable content).
+
+- Sends a notification email on user reported content (i.e. inappropriate or objectionable content).
+- Register for push notifications
 
 ## Deployment
 
 - Ensure a `.env` file exists with environment variables set properly. (see password manager)
 - `yarn deploy:test`
 - Test whether email sending works by executing `post.http`
+- Also take a look at `secret.http`
 - on success: `yarn deploy`
 
 ## Links

@@ -52,3 +52,4 @@ yarn.lock
 
 # secret environment variables
 .env
+secret.http

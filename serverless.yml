@@ -25,3 +25,11 @@ functions:
       - http:
           path: "/"
           method: post
+  # registerPushNotif:
+  #   handler: src/register-push-notification.handler
+  #   events:
+  #     - http:
+  #         path: "/push-notifications/register"
+  #         method: post
+  #   environment:
+  #     CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"

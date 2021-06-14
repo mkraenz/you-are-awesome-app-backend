@@ -11,18 +11,24 @@
         "deploy": "serverless deploy",
         "deploy:test": "serverless offline",
         "deploy:test:verbose": "serverless offline --printOutput",
+        "dev": "npm run deploy:test",
         "start": "ts-node src/index.ts",
         "test": "jest"
     },
     "dependencies": {
         "aws-lambda": "^1.0.6",
         "class-validator": "^0.12.2",
+        "crypto-js": "^4.0.0",
+        "expo-server-sdk": "^3.5.1",
+        "node-fetch": "^2.6.0",
         "nodemailer": "^6.4.11"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.61",
+        "@types/crypto-js": "^3.1.47",
         "@types/jest": "^26.0.10",
         "@types/node": "8.x",
+        "@types/node-fetch": "^2.5.4",
         "@types/nodemailer": "^6.4.0",
         "@typescript-eslint/eslint-plugin": "^2.3.1",
         "@typescript-eslint/parser": "^2.3.1",
