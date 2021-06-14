@@ -1,7 +1,7 @@
 import AES from "crypto-js/aes";
 import encUtf8 from "crypto-js/enc-utf8";
 import hmacSHA512 from "crypto-js/hmac-sha512";
-import { assertEnvVar } from "./validation/assert";
+import { assertEnvVar } from "../validation/assert";
 
 export const hash = (text: string, length = 32, env = process.env) => {
     assertEnvVar(env.HASH_PASSWORD, "HASH_PASSWORD");

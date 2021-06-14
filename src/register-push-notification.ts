@@ -3,7 +3,7 @@ import { editCronJob } from "./cron/editCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
 import { isCronTime } from "./cron/isCrontime";
-import { encrypt, hash } from "./crypto";
+import { encrypt, hash } from "./util/crypto";
 import { respond } from "./utils/respond";
 
 export async function handler(

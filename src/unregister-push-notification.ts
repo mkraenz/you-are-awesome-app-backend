@@ -3,7 +3,7 @@ import pick from "lodash.pick";
 import { deleteCronJob } from "./cron/deleteCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
-import { hash } from "./crypto";
+import { hash } from "./util/crypto";
 import { respond } from "./utils/respond";
 import { assertToken } from "./validation/assert";
 
