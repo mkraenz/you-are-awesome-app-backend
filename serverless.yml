@@ -1,6 +1,6 @@
-service: yaa-report-inappropriate
+service: youareawesomeapp
 # app and org for use with dashboard.serverless.com
-app: youareawesomeapp-report-inappropriate
+app: youareawesomeapp
 org: prosingularity
 
 plugins:
@@ -20,16 +20,16 @@ provider:
 
 functions:
   reportInappropriate:
-    handler: src/index.handler
+    handler: src/report-inappropriate.handler
     events:
       - http:
-          path: "/"
+          path: "/reportinappropriate/"
           method: post
-  # registerPushNotif:
-  #   handler: src/register-push-notification.handler
-  #   events:
-  #     - http:
-  #         path: "/push-notifications/register"
-  #         method: post
-  #   environment:
-  #     CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
+  registerPushNotif:
+    handler: src/register-push-notification.handler
+    events:
+      - http:
+          path: "/push-notifications/register/"
+          method: post
+    environment:
+      CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"

@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "author": "Mirco Kraenz",
     "license": "UNLICENSED",
-    "main": "dist/index.js",
+    "main": "dist/report-inappropriate.js",
     "scripts": {
         "build": "tsc",
         "clean": "del-cli dist build",
@@ -12,7 +12,7 @@
         "deploy:test": "serverless offline",
         "deploy:test:verbose": "serverless offline --printOutput",
         "dev": "npm run deploy:test",
-        "start": "ts-node src/index.ts",
+        "start": "ts-node src/report-inappropriate.ts",
         "test": "jest"
     },
     "dependencies": {
