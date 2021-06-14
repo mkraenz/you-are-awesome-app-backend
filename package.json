@@ -1,6 +1,6 @@
 {
-    "name": "you-are-awesome-app-user-contribs",
-    "version": "0.1.0",
+    "name": "you-are-awesome-app-serverless-backend",
+    "version": "0.2.0",
     "author": "Mirco Kraenz",
     "license": "UNLICENSED",
     "main": "dist/report-inappropriate.js",

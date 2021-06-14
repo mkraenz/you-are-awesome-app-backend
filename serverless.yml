@@ -8,9 +8,8 @@ plugins:
   - serverless-plugin-typescript
   - serverless-offline # must come after typescript
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+# only deploy with specific Serverless version
+frameworkVersion: ^2.2.0
 
 provider:
   name: aws
