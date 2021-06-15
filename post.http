@@ -30,3 +30,11 @@ Content-Type: application/json
 {
     "token": "ExponentPushToken[123456]"
 }
+
+### Lambda: send push notification
+POST http://localhost:3000/
+Content-Type: application/json
+
+{ 
+    "token": "123456=="
+}

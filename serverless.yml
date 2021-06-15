@@ -4,12 +4,12 @@ app: youareawesomeapp
 org: prosingularity
 
 plugins:
-  - serverless-dotenv-plugin
   - serverless-plugin-typescript
   - serverless-offline # must come after typescript
 
 # only deploy with specific Serverless version
 frameworkVersion: ^2.2.0
+useDotenv: true
 
 provider:
   name: aws
@@ -24,6 +24,14 @@ functions:
       - http:
           path: "/reportinappropriate/"
           method: post
+    environment:
+      SMTP_HOST: ${env:SMTP_HOST}
+      SMTP_USERNAME: ${env:SMTP_USERNAME}
+      SMTP_PASSWORD: ${env:SMTP_PASSWORD}
+      SMTP_PORT: ${env:SMTP_PORT}
+      USE_SSL: ${env:USE_SSL}
+      TO_EMAILS_CSV: ${env:TO_EMAILS_CSV}
+      FROM_ADDRESS: ${env:FROM_ADDRESS}
 
   registerPushNotif:
     handler: src/register-push-notification.handler
@@ -33,6 +41,10 @@ functions:
           method: post
     environment:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
+      PUSH_NOTIFICATIONS_BACKEND_URI: ${env:PUSH_NOTIFICATIONS_BACKEND_URI}
+      EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
+      HASH_PASSWORD: ${env:HASH_PASSWORD}
+      SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
 
   unregisterPushNotif:
     handler: src/unregister-push-notification.handler
@@ -42,3 +54,5 @@ functions:
           method: post
     environment:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
+      EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
+      HASH_PASSWORD: ${env:HASH_PASSWORD}

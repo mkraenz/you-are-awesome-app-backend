@@ -12,7 +12,7 @@ export const fetchCronJobs = async (
     if (!env.EASY_CRON_API_TOKEN || !env.CRON_JOB_NAME_PREFIX) {
         throw new Error("Missing environment variable");
     }
-    const easyCronApiToken = encodeURIComponent(env.EASY_CRON_API_TOKEN);
+    const easyCronApiToken = env.EASY_CRON_API_TOKEN;
     const response = await fetch(
         `https://www.easycron.com/rest/list?token=${easyCronApiToken}&sortby=name`
     );

@@ -21,7 +21,7 @@ export const decrypt = (cipherText: string, env = process.env) => {
 };
 
 const usePw = (env = process.env) => {
-    const pw = env.PASSWORD;
-    assertEnvVar(pw, "PASSWORD");
+    const pw = env.SYMMETRIC_ENCRYPTION_KEY;
+    assertEnvVar(pw, "SYMMETRIC_ENCRYPTION_KEY");
     return pw;
 };

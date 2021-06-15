@@ -1,5 +1,5 @@
 import { Handler } from "aws-lambda";
-import pick from "lodash.pick";
+import { pick } from "lodash";
 import { deleteCronJob } from "./cron/deleteCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
