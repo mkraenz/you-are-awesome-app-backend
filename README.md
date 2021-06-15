@@ -4,8 +4,12 @@ Awesome!
 
 - Sends a notification email on user reported content (i.e. inappropriate or objectionable content).
 - Register for push notifications
+- Unregister from push notifications
+- Send Push notifications
 
 ## Deployment
+
+WARNING: Sending push notifications is in a separate deploy command, in order to hide the URI.
 
 - Ensure a `.env` file exists with environment variables set properly. (see password manager)
 - `yarn deploy:test`
