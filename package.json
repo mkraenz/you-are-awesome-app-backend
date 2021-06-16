@@ -5,7 +5,7 @@
     "license": "UNLICENSED",
     "scripts": {
         "build": "tsc",
-        "clean": "del-cli dist build",
+        "clean": "del-cli dist .build",
         "predeploy:send-push-notif": "npm run predeploy",
         "deploy:send-push-notif": "serverless deploy --config serverless.pre.yml --aws-profile serverless",
         "predeploy": "npm run clean",
