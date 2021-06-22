@@ -7,8 +7,11 @@ export const assertToken = (expoPushToken: string) => {
     }
 };
 
-export function assertEnvVar(value: string | undefined, name: string): asserts value is string {
+export function assertEnvVar(
+    value: string | undefined,
+    name: string
+): asserts value is string {
     if (!value) {
         throw new Error(`Missing Env var: ${name}`);
     }
-};
+}

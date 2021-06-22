@@ -5,9 +5,7 @@ import { assertEnvVar } from "../validation/assert";
 
 export const hash = (text: string, length = 32, env = process.env) => {
     assertEnvVar(env.HASH_PASSWORD, "HASH_PASSWORD");
-    return hmacSHA512(text, env.HASH_PASSWORD)
-        .toString()
-        .slice(0, length);
+    return hmacSHA512(text, env.HASH_PASSWORD).toString().slice(0, length);
 };
 
 export const encrypt = (clearText: string, env = process.env) => {
