@@ -8,7 +8,8 @@ plugins:
   - serverless-offline # must come after typescript
 
 # only deploy with specific Serverless version
-frameworkVersion: ^2.2.0
+frameworkVersion: ^2.48.0
+configValidationMode: error
 useDotenv: true
 
 provider:
@@ -56,3 +57,15 @@ functions:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
       HASH_PASSWORD: ${env:HASH_PASSWORD}
+
+# https://www.serverless.com/framework/docs/providers/aws/guide/resources/
+resources:
+  Resources:
+    CurrentMessageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-current-message
+    legal:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:service}-legal
