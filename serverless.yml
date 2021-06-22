@@ -3,6 +3,7 @@ service: youareawesomeapp
 app: youareawesomeapp
 org: prosingularity
 
+# https://www.serverless.com/plugins/
 plugins:
   - serverless-plugin-typescript
   - serverless-offline # must come after typescript
