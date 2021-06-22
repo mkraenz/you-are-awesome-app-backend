@@ -6,6 +6,7 @@ Awesome!
 - Register for push notifications
 - Unregister from push notifications
 - Send Push notifications
+- gsx2json - Google Sheets to JSON
 
 ## Deployment
 
