@@ -38,3 +38,7 @@ Content-Type: application/json
 { 
     "token": "123456=="
 }
+
+### gsx2json Google Sheets to JSON
+
+GET http://localhost:3000/prod/gsx2json/?id=1n3mhIrBpeAEQVKcparkZPdCnleYFRr06jo80aUtcHgI&sheet=1&columns=false

@@ -31,7 +31,6 @@ export async function handler(
         const resBodyObj = { message: "Success", cronJobId };
         return respond(200, resBodyObj);
     } catch (error) {
-        console.error(error);
         return respond(500, error);
     }
 }

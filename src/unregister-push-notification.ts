@@ -30,7 +30,6 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
         };
         return respond(200, resBody);
     } catch (error) {
-        console.error(error);
         return respond(500, error);
     }
 };

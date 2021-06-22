@@ -18,6 +18,7 @@ provider:
   runtime: nodejs12.x
   region: eu-central-1
   stage: prod
+  profile: serverless
 
 functions:
   reportInappropriate:
@@ -58,6 +59,13 @@ functions:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
       HASH_PASSWORD: ${env:HASH_PASSWORD}
+
+  gsx2json:
+    handler: src/gsx2json/index.handler
+    events:
+      - http:
+          path: "/gsx2json/"
+          method: get
 
 # https://www.serverless.com/framework/docs/providers/aws/guide/resources/
 resources:

@@ -24,7 +24,6 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
         const resBodyObj = { message: "Success", todaysPost: post };
         return respond(200, resBodyObj);
     } catch (error) {
-        console.error(error);
         return respond(500, error.message);
     }
 };
