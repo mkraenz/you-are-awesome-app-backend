@@ -5,6 +5,7 @@ import { decrypt, encrypt, hash } from "../src/util/crypto";
 it("decrypt after encrypt should yield the same result | deterministic", () => {
     const env = {
         PASSWORD: "secret",
+        SYMMETRIC_ENCRYPTION_KEY: "asdf",
     };
     const clearText = "hello there";
 
@@ -19,6 +20,7 @@ it("decrypt after encrypt should yield the same result", () => {
         const randomPw = internet.password(random(10, 20), false, /[0-9A-Z]/);
         const env = {
             PASSWORD: randomPw,
+            SYMMETRIC_ENCRYPTION_KEY: "asdf",
         };
         const randomStr = internet.password(random(50, 100), false, /[0-9A-Z]/);
         const clearText = randomStr;
@@ -34,6 +36,7 @@ it("encrypt is NOT deterministic", () => {
     // this caused some trouble first but eventually led to an even more secure implementation
     const env = {
         PASSWORD: "secret",
+        SYMMETRIC_ENCRYPTION_KEY: "asdf",
     };
     const clearText = "hello there";
 

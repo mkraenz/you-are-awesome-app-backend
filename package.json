@@ -29,11 +29,11 @@
         "@types/aws-lambda": "^8.10.77",
         "@types/crypto-js": "^4.0.1",
         "@types/faker": "^5.5.6",
-        "@types/jest": "^26.0.10",
+        "@types/jest": "^26.0.23",
         "@types/lodash": "^4.14.170",
         "@types/node": "12.x",
         "@types/node-fetch": "^2.5.4",
-        "@types/nodemailer": "^6.4.0",
+        "@types/nodemailer": "^6.4.2",
         "@typescript-eslint/eslint-plugin": "^2.3.1",
         "@typescript-eslint/parser": "^2.3.1",
         "del-cli": "^3.0.0",
@@ -43,8 +43,8 @@
         "serverless": "^2.48.0",
         "serverless-offline": "^6.9.0",
         "serverless-plugin-typescript": "^1.1.9",
-        "ts-jest": "^26.3.0",
-        "ts-node": "^8.4.1",
-        "typescript": "^3.9.4"
+        "ts-jest": "^26.5.6",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.10"
     }
 }
