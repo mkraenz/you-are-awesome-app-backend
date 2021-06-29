@@ -40,8 +40,9 @@
         "jest": "^26.6.3",
         "prettier": "^2.3.1",
         "serverless": "^2.48.0",
-        "serverless-offline": "^6.9.0",
+        "serverless-offline": "^7.0.0",
         "serverless-plugin-typescript": "^1.1.9",
+        "serverless-s3-sync": "^1.17.1",
         "ts-jest": "^26.5.6",
         "ts-node": "^8.10.2",
         "typescript": "^3.9.10"

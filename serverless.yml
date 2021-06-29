@@ -7,6 +7,7 @@ org: prosingularity
 plugins:
   - serverless-plugin-typescript
   - serverless-offline # must come after typescript
+  - serverless-s3-sync
 
 # only deploy with specific Serverless version
 frameworkVersion: ^2.48.0
@@ -78,3 +79,13 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:service}-legal
+        VersioningConfiguration:
+          Status: Enabled
+
+custom:
+  # https://www.serverless.com/plugins/serverless-s3-sync
+  s3Sync:
+    - bucketName: ${self:service}-legal
+      localDir: assets
+      acl: public-read
+      followSymlinks: false
