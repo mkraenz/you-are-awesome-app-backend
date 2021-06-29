@@ -1,6 +1,6 @@
 # Terms and Conditions
 
-Last updated September 11, 2020
+Last updated June 29, 2021
 
 ## Purpose of the App
 
