@@ -16,6 +16,8 @@ provider:
   runtime: nodejs12.x
   region: eu-central-1
   stage: prod
+  profile: serverless
+  lambdaHashingVersion: 20201221
 
 # WORKAROUND: deploy this fn separately so that it receives a different URI that we want to use in the fn's of serverless.yml
 functions:

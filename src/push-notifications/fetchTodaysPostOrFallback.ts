@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import axios from "axios";
 import { PostWithDate } from "./IPost";
 import { todayOrRandomPost } from "./todayOrRandomPost";
 
@@ -12,15 +12,15 @@ export const fetchTodaysPostOrFallback = async (
     return todayOrRandomPost(posts);
 };
 
-async function fetchPosts(uri: string, fetchFn = fetch) {
-    const response = await fetchFn(uri);
+async function fetchPosts(uri: string) {
+    const res = await axios.get<PostWithDate[]>(uri);
     // NOTE: capital letters in the google sheets header (= names of the json's properties)
     // will be converted to all small letters
-    if (!response.ok) {
+    const posts = res.data;
+    if (!Array.isArray(posts)) {
         throw new Error(
-            `Failed to fetch posts. HTTP status ${response.status} ${response.statusText}`
+            `Failed to fetch posts. Expected to receive an array, found ${typeof posts}`
         );
     }
-    const posts: PostWithDate[] = (await response.json()).rows;
     return posts;
 }

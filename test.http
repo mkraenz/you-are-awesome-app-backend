@@ -32,7 +32,7 @@ Content-Type: application/json
 }
 
 ### Lambda: send push notification
-POST http://localhost:3000/
+POST http://localhost:3000/prod/push-notifications/send
 Content-Type: application/json
 
 { 
