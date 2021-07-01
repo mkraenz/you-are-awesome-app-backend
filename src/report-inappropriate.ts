@@ -1,5 +1,6 @@
 import { Handler } from "aws-lambda";
 import { createTransport } from "nodemailer";
+import { respond } from "./utils/respond";
 import { getBody, IBody, Report } from "./validation/Body.dto";
 import { EmailConfig, getEmailConfig } from "./validation/EmailConfig.dto";
 
@@ -17,26 +18,10 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
         const sendEmailResult = await mailer.sendMail(email);
         console.log(sendEmailResult);
         const resBodyObj = { message: "Success" };
-        return {
-            statusCode: "200",
-            body: JSON.stringify(resBodyObj),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
+        return respond(200, resBodyObj);
     } catch (error) {
         return respond(500, error);
     }
-};
-
-const respond = (statusCode: number, body: object | string) => {
-    return {
-        statusCode,
-        body: JSON.stringify(body),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
 };
 
 const getTransport = ({ host, port, useSsl, user, password }: EmailConfig) => {
