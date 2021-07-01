@@ -1,5 +1,6 @@
-import fetch, { Response } from "node-fetch";
+import axios from "axios";
 import { assertEnvVar } from "../validation/assert";
+import { assertCronSuccess, ResBody } from "./assertSuccess";
 
 export const deleteCronJob = async (
     id: string,
@@ -9,21 +10,8 @@ export const deleteCronJob = async (
 ) => {
     assertEnvVar(env.EASY_CRON_API_TOKEN, "EASY_CRON_API_TOKEN");
     const easyCronApiToken = encodeURIComponent(env.EASY_CRON_API_TOKEN!);
-    const response = await fetch(
+    const res = await axios.get<ResBody>(
         `https://www.easycron.com/rest/delete?token=${easyCronApiToken}&id=${id}`
     );
-    await assertSuccess(response);
+    assertCronSuccess(res, "Delete");
 };
-
-async function assertSuccess(response: Response) {
-    const body: {
-        status: string;
-    } = await response.json();
-    if (response.status !== 200 || body.status !== "success") {
-        throw new Error(
-            `Delete cron failed. HTTP status ${
-                response.status
-            }. Response body from easycron: ${JSON.stringify(body)}`
-        );
-    }
-}

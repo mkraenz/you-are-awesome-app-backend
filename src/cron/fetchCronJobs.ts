@@ -1,4 +1,5 @@
-import fetch from "node-fetch";
+import axios from "axios";
+import { assertCronSuccess, ResBody } from "./assertSuccess";
 import { ICronJob } from "./ICronJob";
 
 /** @returns cronJobId from easycron */
@@ -13,19 +14,9 @@ export const fetchCronJobs = async (
         throw new Error("Missing environment variable");
     }
     const easyCronApiToken = env.EASY_CRON_API_TOKEN;
-    const response = await fetch(
+    const res = await axios.get<ResBody & { cron_jobs: ICronJob[] }>(
         `https://www.easycron.com/rest/list?token=${easyCronApiToken}&sortby=name`
     );
-    const body: {
-        status: string;
-        cron_jobs: ICronJob[];
-    } = await response.json();
-    if (response.status !== 200 || body.status !== "success") {
-        throw new Error(
-            `Get cron failed.  HTTP status ${
-                response.status
-            }. Response body from easycron: ${JSON.stringify(body)}`
-        );
-    }
-    return body.cron_jobs;
+    assertCronSuccess(res, "Get");
+    return res.data.cron_jobs;
 };

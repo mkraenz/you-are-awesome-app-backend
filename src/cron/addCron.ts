@@ -1,5 +1,6 @@
-import fetch from "node-fetch";
+import axios from "axios";
 import { assertEnvVar } from "../validation/assert";
+import { assertCronSuccess, ResBody } from "./assertSuccess";
 
 /**
  * See https://www.easycron.com/document/add
@@ -37,16 +38,9 @@ export const addCron = async (
     );
     const url = encodeURIComponent(env.PUSH_NOTIFICATIONS_BACKEND_URI!);
     const easyCronApiToken = encodeURIComponent(env.EASY_CRON_API_TOKEN!);
-    const response = await fetch(
+    const res = await axios.get<ResBody & { cron_job_id: string }>(
         `https://www.easycron.com/rest/add?token=${easyCronApiToken}&cron_expression=${crontime}&http_method=POST&posts=${posts}&url=${url}&cron_job_name=${cronJobName}`
     );
-    const body: { status: string; cron_job_id: string } = await response.json();
-    if (response.status !== 200 || body.status !== "success") {
-        throw new Error(
-            `Add cron failed. Response body from easycron: ${JSON.stringify(
-                body
-            )}`
-        );
-    }
-    return body.cron_job_id;
+    assertCronSuccess(res, "Add");
+    return res.data.cron_job_id;
 };
