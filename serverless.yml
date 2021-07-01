@@ -8,6 +8,7 @@ plugins:
   - serverless-plugin-typescript
   - serverless-offline # must come after typescript
   - serverless-s3-sync
+  - serverless-iam-roles-per-function
 
 # only deploy with specific Serverless version
 frameworkVersion: ^2.48.0
@@ -68,6 +69,35 @@ functions:
       - http:
           path: "/gsx2json/"
           method: get
+
+  exportMessagesToS3:
+    handler: src/export-messages-to-s3.handler
+    environment:
+      REGION: ${self:provider.region}
+      GSX2JSON_LAMBDA_ARN:
+        Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn] # doesnt work with sls-offline
+      BUCKET_NAME: ${self:service}-current-message
+    events:
+      - http:
+          path: "/test/"
+          method: get
+      - schedule:
+          rate: rate(1 day)
+          description: "Invoke export of Awesome Messages to S3 ${self:service}-current-messages"
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+        Resource:
+          - Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn]
+      - Effect: Allow
+        Action:
+          - s3:PutObject*
+        Resource:
+          - Fn::Join:
+              - ""
+              - - Fn::GetAtt: [CurrentMessageBucket, Arn]
+                - "/*"
 
 # https://www.serverless.com/framework/docs/providers/aws/guide/resources/
 resources:
