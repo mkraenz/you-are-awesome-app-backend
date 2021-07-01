@@ -34,8 +34,8 @@ const fetchSpreadsheetData = async ({
     sheet: number;
 }) => {
     const url = `https://spreadsheets.google.com/feeds/list/${id}/${sheet}/public/values?alt=json`;
-    const res = await Axios.get(url);
-    return res.data as { feed: { entry: any } };
+    const res = await Axios.get<{ feed: { entry: any } }>(url);
+    return res.data;
 };
 
 const getOptions = (
