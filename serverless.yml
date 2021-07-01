@@ -63,12 +63,9 @@ functions:
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
       HASH_PASSWORD: ${env:HASH_PASSWORD}
 
+  # only called via RPC => no events
   gsx2json:
     handler: src/gsx2json/index.handler
-    events:
-      - http:
-          path: "/gsx2json/"
-          method: get
 
   exportMessagesToS3:
     handler: src/export-messages-to-s3.handler
