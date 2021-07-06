@@ -2,11 +2,18 @@
 
 Awesome!
 
+## Architecture Diagram
+
+[diagram on gdrive](https://drive.google.com/file/d/16q4tDXvDJJmJJllpi_lgGpntYiB_nEjh/view?usp=sharing)
+
+## Functions
+
 - Sends a notification email on user reported content (i.e. inappropriate or objectionable content).
 - Register for push notifications
 - Unregister from push notifications
 - Send Push notifications
 - gsx2json - Google Sheets to JSON
+- Write contributions to Google Sheets
 
 ## Deployment
 
