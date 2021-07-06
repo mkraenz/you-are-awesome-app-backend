@@ -53,4 +53,3 @@ yarn.lock
 # secret environment variables
 .env
 secret.http
-youareawesomeapp-ghsheet-user-contrib.json
