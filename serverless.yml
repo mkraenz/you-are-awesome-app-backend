@@ -47,7 +47,17 @@ functions:
           method: post
     environment:
       CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
-      PUSH_NOTIFICATIONS_BACKEND_URI: ${env:PUSH_NOTIFICATIONS_BACKEND_URI}
+      PUSH_NOTIFICATIONS_BACKEND_URI:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: ApiGatewayRestApi
+            - ".execute-api."
+            - ${opt:region, self:provider.region}
+            - ".amazonaws.com/"
+            - ${opt:stage, self:provider.stage}
+            - /push-notifications/send/
+            - ${env:SEND_PUSH_NOTIF_ENDPOINT}/
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
       HASH_PASSWORD: ${env:HASH_PASSWORD}
       SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
@@ -63,6 +73,16 @@ functions:
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
       HASH_PASSWORD: ${env:HASH_PASSWORD}
 
+  sendPushNotif:
+    handler: src/send-push-notification.handler
+    events:
+      - http:
+          path: "/push-notifications/send/${env:SEND_PUSH_NOTIF_ENDPOINT}/"
+          method: post
+    environment:
+      FETCH_POSTS_URI: ${env:FETCH_POSTS_URI}
+      SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
+
   # only called via RPC => no events
   gsx2json:
     handler: src/gsx2json/index.handler
@@ -75,9 +95,10 @@ functions:
         Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn] # doesnt work with sls-offline
       BUCKET_NAME: ${self:service}-current-message
     events:
-      - http:
-          path: "/test/"
-          method: get
+      # enable for dev
+      # - http:
+      #     path: "/manually-trigger-export-to-s3/"
+      #     method: get
       - schedule:
           rate: rate(1 day)
           description: "Invoke export of Awesome Messages to S3 ${self:service}-current-messages"
