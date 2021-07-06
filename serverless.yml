@@ -39,6 +39,17 @@ functions:
       TO_EMAILS_CSV: ${env:TO_EMAILS_CSV}
       FROM_ADDRESS: ${env:FROM_ADDRESS}
 
+  writeContributionToGsheet:
+    handler: src/contributions/index.writeContributionToGsheet
+    events:
+      - http:
+          path: contributions
+          method: post
+    environment:
+      CONTRIBUTIONS_SPREADSHEET_ID: ${env:CONTRIBUTIONS_SPREADSHEET_ID}
+      CONTRIBUTIONS_GOOGLE_EMAIL: ${env:CONTRIBUTIONS_GOOGLE_EMAIL}
+      CONTRIBUTIONS_GOOGLE_PRIVATE_KEY: ${env:CONTRIBUTIONS_GOOGLE_PRIVATE_KEY}
+
   registerPushNotif:
     handler: src/register-push-notification.handler
     events:

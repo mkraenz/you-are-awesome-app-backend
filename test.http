@@ -39,6 +39,18 @@ Content-Type: application/json
     "token": "123456=="
 }
 
-### gsx2json Google Sheets to JSON
+### Lambda: gsx2json Google Sheets to JSON
 
 GET http://localhost:3000/prod/gsx2json/?id=1n3mhIrBpeAEQVKcparkZPdCnleYFRr06jo80aUtcHgI&sheet=1&columns=false
+
+### Lambda: write contribution to Google Sheets
+POST http://localhost:3000/prod/contributions
+Content-Type: application/json
+
+{
+    "id": "32961b0a-8226-40cc-93d2-90313a70786c",
+    "text": "hello there",
+    "author": "I am author",
+    "country": "from the country side",
+    "isodate": "2020-05-10"
+}

@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import type { Handler } from "aws-lambda";
 import { pick } from "lodash";
 import { deleteCronJob } from "./cron/deleteCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
