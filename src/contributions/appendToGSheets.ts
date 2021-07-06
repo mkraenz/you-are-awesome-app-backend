@@ -1,18 +1,18 @@
-import { google } from "googleapis";
-import { JWT } from "googleapis-common";
+import { auth, sheets_v4 } from "@googleapis/sheets";
 import { IMessage } from "./IMessage";
 
 export const setupGoogleAuth = (cfg: { privateKey: string; email: string }) =>
-    new google.auth.JWT(cfg.email, undefined, cfg.privateKey, [
+    new auth.JWT(cfg.email, undefined, cfg.privateKey, [
         "https://www.googleapis.com/auth/spreadsheets",
     ]);
+
+type JWT = ReturnType<typeof setupGoogleAuth>;
 
 export async function appendToGSheets(
     body: IMessage,
     auth: JWT,
     spreadsheetId: string
 ) {
-    // const credentials = await auth.authorize();
     const row = toRow(body);
     await appendRow(auth, spreadsheetId, row);
     console.log(
@@ -38,9 +38,10 @@ export async function appendRow(
     spreadsheetId: string,
     row: string[]
 ) {
-    const gsheetsService = google.sheets({ version: "v4", auth });
+    const gsheets = new sheets_v4.Sheets({ auth });
     // axios request -> throws on 4xx or 5xx http status code
-    await gsheetsService.spreadsheets.values.append({
+    await gsheets.spreadsheets.values.append({
+        auth,
         spreadsheetId,
         valueInputOption: "USER_ENTERED",
         range: "Sheet 1",

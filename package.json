@@ -18,13 +18,13 @@
         "test": "jest"
     },
     "dependencies": {
+        "@googleapis/sheets": "^0.3.0",
         "aws-lambda": "^1.0.6",
         "aws-sdk": "^2.937.0",
         "axios": "^0.21.1",
         "class-validator": "^0.12.2",
         "crypto-js": "^4.0.0",
         "expo-server-sdk": "^3.6.0",
-        "googleapis": "^80.1.0",
         "lodash": "^4.17.21",
         "nodemailer": "^6.6.2"
     },
