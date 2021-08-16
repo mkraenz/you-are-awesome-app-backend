@@ -26,35 +26,33 @@ assertEnv(env);
 const lambda = new Lambda({ region: env.REGION });
 const s3 = new S3({ region: env.REGION });
 
-export const handler: Handler<{ body: string }> = async (event, context) => {
+export const handler: Handler<{ body: string }> = async () => {
     try {
         const res = await lambda
             .invoke({
-                FunctionName: process.env.GSX2JSON_LAMBDA_ARN!,
-                Payload: JSON.stringify({
-                    queryStringParameters: {
-                        id: "1n3mhIrBpeAEQVKcparkZPdCnleYFRr06jo80aUtcHgI",
-                        sheet: "1",
-                        columns: "false",
-                    },
-                }),
+                FunctionName: env.GSX2JSON_LAMBDA_ARN,
             })
             .promise();
+
         if (res.StatusCode !== 200 || !res.Payload) {
             console.error(JSON.stringify(res));
             throw new Error("Fetch from gsx2json lambda failed");
         }
         const payload = res.Payload;
-        if (!(payload && typeof payload === "string"))
+        if (!payload || typeof payload !== "string")
             throw new Error("res.payload is not a string");
         // body was stringified by gsx2json handler => need to parse twice
         const body: unknown = JSON.parse(payload).body;
         if (typeof body !== "string")
             throw new Error("res.payload.body must be a string");
         const messages = JSON.parse(body).rows;
+        if (!Array.isArray(messages))
+            throw new Error("Messages not in expected array format");
+        if (messages.length === 0) throw new Error("Messages array is empty");
+        console.log({ NumOfMessagesPutToS3: messages.length });
         await s3
             .putObject({
-                Bucket: process.env.BUCKET_NAME!,
+                Bucket: env.BUCKET_NAME,
                 ACL: "public-read",
                 Body: JSON.stringify(messages, null, 2),
                 Key: "messages.json",

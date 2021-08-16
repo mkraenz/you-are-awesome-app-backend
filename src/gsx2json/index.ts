@@ -16,7 +16,8 @@ export const handler: Handler<{
         const spreadsheetAsJson = await csvTojson({
             trim: true,
         }).fromString(spreadsheetAsCsv);
-        return respond(200, spreadsheetAsJson);
+        console.log({ returnedNumOfRows: spreadsheetAsJson.length });
+        return respond(200, { rows: spreadsheetAsJson });
     } catch (error) {
         return respond(500, error);
     }
