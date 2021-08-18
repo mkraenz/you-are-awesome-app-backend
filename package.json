@@ -27,7 +27,8 @@
         "csvtojson": "^2.0.10",
         "expo-server-sdk": "^3.6.0",
         "lodash": "^4.17.21",
-        "nodemailer": "^6.6.2"
+        "nodemailer": "^6.6.2",
+        "serverless-plugin-aws-alerts": "^1.7.3"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.77",

@@ -9,6 +9,7 @@ plugins:
   - serverless-offline # must come after typescript
   - serverless-s3-sync
   - serverless-iam-roles-per-function
+  - serverless-plugin-aws-alerts
 
 # only deploy with specific Serverless version
 frameworkVersion: ^2.48.0
@@ -18,8 +19,8 @@ useDotenv: true
 provider:
   name: aws
   runtime: nodejs12.x
-  region: eu-central-1
-  stage: prod
+  region: ${opt:region, "eu-central-1"}
+  stage: ${opt:stage, "prod"}
   profile: serverless
   lambdaHashingVersion: 20201221
 
@@ -64,9 +65,9 @@ functions:
           - - "https://"
             - Ref: ApiGatewayRestApi
             - ".execute-api."
-            - ${opt:region, self:provider.region}
+            - ${self:provider.region}
             - ".amazonaws.com/"
-            - ${opt:stage, self:provider.stage}
+            - ${self:provider.stage}
             - /push-notifications/send/
             - ${env:SEND_PUSH_NOTIF_ENDPOINT}/
       EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
@@ -151,3 +152,16 @@ custom:
       localDir: assets
       acl: public-read
       followSymlinks: false
+
+  # https://www.serverless.com/plugins/serverless-plugin-aws-alerts
+  alerts:
+    stages:
+      - prod
+    topics:
+      alarm:
+        topic: ${self:service}-${self:provider.stage}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${env:ALERT_EMAIL}
+    alarms:
+      - functionErrors
