@@ -22,7 +22,7 @@ export const triggerExpoPushNotificationBackend = async (
     await handleReceipts(expo, receiptIds);
 };
 
-// TODO #1 handle receipts at some point
+// TODO #535 handle receipts at some point - implemented in #535. After that's implemented + production data is migrated, remove this and related functions.
 
 // Later, after the Expo push notification service has delivered the
 // notifications to Apple or Google (usually quickly, but allow the the service

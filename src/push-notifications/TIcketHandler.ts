@@ -104,7 +104,6 @@ export class TicketHandler {
         return { successTickets, thirtyMinsAgo };
     }
 
-    /** TODO #535 consider change in architecture to not directly remove subscriptions from the database. E.g. SQS triggering unsubscribe lambda function */
     private async handleDeviceNotRegisteredError(
         deviceNotRegisteredReceipts: ErrorReceipt[]
     ) {
