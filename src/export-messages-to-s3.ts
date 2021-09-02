@@ -1,6 +1,7 @@
 import { Handler } from "aws-lambda";
 import { Lambda, S3 } from "aws-sdk";
 import { respond } from "./utils/respond";
+import { assertEnvVar } from "./validation/assert";
 
 interface Env {
     REGION: string;
@@ -9,15 +10,9 @@ interface Env {
 }
 
 function assertEnv(env: Partial<Env>): asserts env is Env {
-    if (!process.env.REGION) {
-        throw new Error("Missing env var REGION");
-    }
-    if (!process.env.GSX2JSON_LAMBDA_ARN) {
-        throw new Error("Missing env var GSX2JSON_LAMBDA_ARN");
-    }
-    if (!process.env.BUCKET_NAME) {
-        throw new Error("Missing env var BUCKET_NAME");
-    }
+    assertEnvVar(env.REGION, "REGION");
+    assertEnvVar(env.GSX2JSON_LAMBDA_ARN, "GSX2JSON_LAMBDA_ARN");
+    assertEnvVar(env.BUCKET_NAME, "BUCKET_NAME");
 }
 
 const env = process.env;
@@ -26,8 +21,9 @@ assertEnv(env);
 const lambda = new Lambda({ region: env.REGION });
 const s3 = new S3({ region: env.REGION });
 
-export const handler: Handler<{ body: string }> = async () => {
+export const handler: Handler = async () => {
     try {
+        // TODO improve local dev with  https://www.serverless.com/plugins/serverless-offline#usage-with-invoke and process.env.IS_OFFLINE
         const res = await lambda
             .invoke({
                 FunctionName: env.GSX2JSON_LAMBDA_ARN,

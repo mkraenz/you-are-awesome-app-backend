@@ -39,7 +39,7 @@ const deleteIfExists = async (hashedToken: string) => {
     const wantedCronJob = findCronJobByToken(hashedToken, cronJobs);
     if (!wantedCronJob) {
         throw new Error(
-            "Cannot register. Cronjob not found. Have you registered before?"
+            "Cannot unregister. Cronjob not found. Have you registered before?"
         );
     }
     await deleteCronJob(wantedCronJob.cron_job_id);

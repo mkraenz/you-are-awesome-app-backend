@@ -11,4 +11,7 @@ module.exports = {
     testMatch: ["**/test/**/*.test.ts"],
     testEnvironment: "node",
     setupFiles: ["dotenv/config"],
+    resetMocks: true,
+    resetModules: true,
+    restoreMocks: true,
 };

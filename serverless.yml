@@ -1,3 +1,5 @@
+# TODO cleanup by extracting vars to custom.var.xy
+
 service: youareawesomeapp
 # app and org for use with dashboard.serverless.com
 app: youareawesomeapp
@@ -23,6 +25,8 @@ provider:
   stage: ${opt:stage, "prod"}
   profile: serverless
   lambdaHashingVersion: 20201221
+  eventBridge:
+    useCloudFormation: true
 
 functions:
   reportInappropriate:
@@ -95,6 +99,85 @@ functions:
       FETCH_POSTS_URI: ${env:FETCH_POSTS_URI}
       SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
 
+  subscribePushNotif:
+    handler: src/push-notifications/subscribe.handler
+    events:
+      - http:
+          path: push-notifications/subscribe
+          method: post
+    environment:
+      REGION: ${self:provider.region}
+      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource:
+          - Fn::GetAtt: [PushNotifSubsTable, Arn]
+
+  unsubPushNotif:
+    handler: src/push-notifications/unsubscribe.handler
+    events:
+      - http:
+          path: push-notifications/unsubscribe
+          method: post
+    environment:
+      REGION: ${self:provider.region}
+      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource:
+          - Fn::GetAtt: [PushNotifSubsTable, Arn]
+
+  sendPushNotif2:
+    handler: src/push-notifications/send.handler
+    # TODO enable
+    # events:
+    #   - eventBridge:
+    #       schedule: rate(1 minute)
+    environment:
+      REGION: ${self:provider.region}
+      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
+      SUBSCRIPTIONS_BY_TIME_INDEX: TimeIndex
+      TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
+      AWESOME_MESSAGES_URI: "https://youareawesomeapp-current-message.s3.eu-central-1.amazonaws.com/messages.json"
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:BatchWriteItem
+        Resource:
+          - Fn::GetAtt: [PushNotifTicketsTable, Arn]
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource:
+          - Fn::GetAtt: [PushNotifSubsTable, Arn]
+          - Fn::Join:
+              - "/"
+              - - Fn::GetAtt: [PushNotifSubsTable, Arn]
+                - index
+                - TimeIndex
+
+  # handleSuccessTickets:
+  #   handler: src/push-notifications/handleSuccessTickets.handler
+  #   description: "Read expo push notification success-tickets from dynamoDb table and handle corresponding receipts by either deleting the ticket on successfully sent push notification, or possibly unregistering from push notification on error."
+  #   events:
+  #     - schedule:
+  #         rate: rate(8 hours)
+  #         description: "Invoke lambda handleSuccessTickets"
+  #   environment:
+  #     REGION: ${self:provider.region}
+  #     TICKETS_TABLE_NAME: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
+  #   iamRoleStatements:
+  #     - Effect: Allow
+  #       Action:
+  #         - dynamodb:Query
+  #         - dynamodb:BatchWriteItem
+  #       Resource:
+  #         - Fn::GetAtt: [PushNotifTicketsTable, Arn]
+
   # only called via RPC => no events
   gsx2json:
     handler: src/gsx2json/index.handler
@@ -138,12 +221,61 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:service}-current-message
+
     legal:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:service}-legal
         VersioningConfiguration:
           Status: Enabled
+
+    PushNotifTicketsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        TableName: NotificationTickets-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: type
+            AttributeType: S
+          - AttributeName: uuid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: type
+            KeyType: HASH
+          - AttributeName: uuid
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    PushNotifSubsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties:
+        TableName: PushNotifSubs-${self:provider.stage}
+        AttributeDefinitions:
+          - AttributeName: expoPushToken
+            AttributeType: S
+          - AttributeName: time
+            AttributeType: S
+        KeySchema:
+          - AttributeName: expoPushToken
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 3
+          WriteCapacityUnits: 3
+        GlobalSecondaryIndexes:
+          - IndexName: TimeIndex
+            KeySchema:
+              - AttributeName: time
+                KeyType: HASH
+              - AttributeName: expoPushToken
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 3
+              WriteCapacityUnits: 3
 
 custom:
   # https://www.serverless.com/plugins/serverless-s3-sync

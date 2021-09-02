@@ -31,6 +31,26 @@ Content-Type: application/json
     "token": "ExponentPushToken[123456]"
 }
 
+### Lambda: v2.0 Subscribe to Push Notifications
+
+POST http://localhost:3000/prod/push-notifications/subscribe
+Content-Type: application/json
+
+{
+    "token": "ExponentPushToken[98765]",
+    "hour": 4,
+    "minute": 51
+}
+
+### Lambda: v2.0 Unsubscribe from Push Notifications
+POST http://localhost:3000/prod/push-notifications/unsubscribe
+Content-Type: application/json
+
+{
+    "token": "ExponentPushToken[98765]"
+}
+
+
 ### Lambda: send push notification
 POST http://localhost:3000/prod/push-notifications/send
 Content-Type: application/json

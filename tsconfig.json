@@ -9,6 +9,7 @@
         "sourceMap": false,
         "outDir": ".build",
         "baseUrl": ".",
+        "downlevelIteration": true,
         "experimentalDecorators": true
     },
     "include": ["src/**/*", "test/**/*"],
