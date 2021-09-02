@@ -1,4 +1,4 @@
-import { ExpoPushErrorTicket } from "expo-server-sdk";
+import { ExpoPushErrorReceipt, ExpoPushErrorTicket } from "expo-server-sdk";
 import { chunk } from "lodash";
 import { ILogger } from "../util/ILogger";
 
@@ -18,6 +18,14 @@ export interface ErrorTicket extends ExpoPushErrorTicket {
     __debug?: never;
 }
 
+interface ErrorReceipt extends ExpoPushErrorReceipt {
+    type: "ErrorReceipt";
+    expoPushToken: string;
+    uuid: string;
+    timestamp: string;
+    __debug?: never;
+}
+
 export type Ticket = SuccessTicket | ErrorTicket;
 
 export const MAX_DYNAMO_DB_BATCH_SIZE = 25;
@@ -29,7 +37,7 @@ export class TicketRepository {
         private readonly logger: ILogger = console
     ) {}
 
-    async putMany(tickets: Ticket[]) {
+    async putMany(tickets: (Ticket | ErrorReceipt)[]) {
         const chunks = chunk(tickets, MAX_DYNAMO_DB_BATCH_SIZE);
         for (const ticketChunk of chunks) {
             await this.dynamoDb

@@ -79,5 +79,11 @@ it("sends notifications and saves tickets to Tickets table", async () => {
 });
 
 it("does nothing if no subscriptions for given time in database", () => {
-    // TODO write me
+    // TODO #535 write me
+});
+
+it("limits message size if too large", () => {
+    // TODO #535 write me
+    // https://docs.expo.dev/push-notifications/sending-notifications/#push-receipt-errors
+    // MessageTooBig: the total notification payload was too large. On Android and iOS the total payload must be at most 4096 bytes.
 });

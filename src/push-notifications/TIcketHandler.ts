@@ -1,4 +1,5 @@
 import { partition } from "lodash";
+import { v4 } from "uuid";
 import { ILogger } from "../util/ILogger";
 import {
     ErrorReceipt,
@@ -15,7 +16,7 @@ export class TicketHandler {
         private readonly subs: Pick<SubscriptionRepository, "deleteMany">,
         private readonly tickets: Pick<
             TicketRepository,
-            "deleteManySuccessTickets" | "getSuccessTickets"
+            "deleteManySuccessTickets" | "getSuccessTickets" | "putMany"
         >,
         private readonly expo: Pick<
             ExpoReceiptAdapter,
@@ -81,7 +82,7 @@ export class TicketHandler {
                 errorReceipts,
                 e => e.details?.error === "DeviceNotRegistered"
             );
-            await this.logOtherErrors(otherErrors);
+            await this.handleOtherErrors(otherErrors);
             if (deviceNotRegisteredReceipts.length > 0) {
                 await this.handleDeviceNotRegisteredError(
                     deviceNotRegisteredReceipts
@@ -115,15 +116,31 @@ export class TicketHandler {
         );
     }
 
-    // TODO #535 handle other errors properly
-    private async logOtherErrors(receipts: ErrorReceipt[]) {
+    private async handleOtherErrors(receipts: ErrorReceipt[]) {
         for (const receipt of receipts) {
             this.logger.error({
-                msg: "Receipt for ticket has error type",
+                msg: "Receipt for ticket has other error. Saving to ticket table",
                 errorType: receipt.details?.error,
                 receiptId: receipt.receiptId,
                 ticketUuid: receipt.ticketUuid,
             });
         }
+        await this.tickets.putMany(
+            receipts.map(r => ({
+                type: "ErrorReceipt",
+                uuid: v4(),
+                expoPushToken: r.expoPushToken,
+                message: r.message,
+                receiptId: r.receiptId,
+                status: r.status,
+                timestamp: new Date().toISOString(),
+                details: {
+                    error: r.details?.error,
+                },
+            }))
+        );
+        await this.tickets.deleteManySuccessTickets(
+            receipts.map(r => r.ticketUuid)
+        );
     }
 }
