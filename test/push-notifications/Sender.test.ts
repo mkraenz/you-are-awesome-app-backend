@@ -1,4 +1,5 @@
 import { Sender } from "../../src/push-notifications/Sender";
+import { mockLogger } from "../../src/util/ILogger";
 
 it("sends notifications and saves tickets to Tickets table", async () => {
     type SenderParams = ConstructorParameters<typeof Sender>;
@@ -55,7 +56,13 @@ it("sends notifications and saves tickets to Tickets table", async () => {
     const ticketRepo: SenderParams[3] = {
         putMany: jest.fn(() => Promise.resolve()),
     };
-    const sender = new Sender(subsRepo, expoMock, awesomeMessage, ticketRepo);
+    const sender = new Sender(
+        subsRepo,
+        expoMock,
+        awesomeMessage,
+        ticketRepo,
+        mockLogger
+    );
 
     await sender.send("17:28");
 

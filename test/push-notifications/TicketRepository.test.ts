@@ -5,6 +5,7 @@ import {
     Ticket,
     TicketRepository,
 } from "../../src/push-notifications/TicketRepository";
+import { mockLogger } from "../../src/util/ILogger";
 import { createTicketsTable, dropTable } from "../createTable.learning";
 
 const TableName = "PushNotifsTicketRepoTickets";
@@ -36,7 +37,7 @@ it("puts a success ticket and can read it back", async () => {
             uuid: "my-uuid",
         },
     ];
-    const repo = new TicketRepository(docClient, TableName);
+    const repo = new TicketRepository(docClient, TableName, mockLogger);
 
     await repo.putMany(tickets);
     const ticketsFromDb = await repo.getSuccessTickets();
@@ -61,7 +62,7 @@ it("does not return error tickets when getting success tickets", async () => {
             },
         },
     ];
-    const repo = new TicketRepository(docClient, TableName);
+    const repo = new TicketRepository(docClient, TableName, mockLogger);
 
     await repo.putMany(tickets);
     const ticketsFromDb = await repo.getSuccessTickets();

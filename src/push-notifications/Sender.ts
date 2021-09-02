@@ -1,3 +1,4 @@
+import { ILogger } from "../util/ILogger";
 import { AwesomeMessagesService } from "./AwesomeMessagesService";
 import { ExpoSendAdapter } from "./ExpoSendAdapter";
 import { SubscriptionRepository } from "./SubscriptionRepository";
@@ -16,39 +17,42 @@ export class Sender {
             AwesomeMessagesService,
             "getTodaysMessage"
         >,
-        private readonly ticketRepository: Pick<TicketRepository, "putMany">
+        private readonly ticketRepository: Pick<TicketRepository, "putMany">,
+        private readonly logger: ILogger = console
     ) {}
 
     public async send(time: string) {
         const subs = await this.subscriptions.getManyByTime(time);
         if (subs.length === 0) {
-            console.log(
-                "No subscriptions found for time ${time}. Skipping sending notifications."
-            );
+            this.logger.log({ msg: "No subs found. Skipping", time });
             return;
         }
-        console.log(`found ${subs.length} subs for ${time}`);
+        this.logger.log({ msg: `found subs to send`, subs: subs.length, time });
         const message = await this.awesomeMessages.getTodaysMessage();
         const notifications = this.expo.subsToMessages(subs, message);
         const notificationChunks = this.expo.chunkNotifications(notifications);
         for (const [i, notificationChunk] of notificationChunks.entries()) {
-            console.log(
-                `sending notification chunk ${i + 1}/${
-                    notificationChunks.length
-                } of length ${notificationChunk.length}, total notifications: ${
-                    notifications.length
-                }`
-            );
+            this.logger.log({
+                msg: `sending chunk`,
+                chunk: i + 1,
+                maxChunk: notificationChunk.length,
+                time,
+                allNotifications: notifications.length,
+            });
             const tickets = await this.expo.sendNotifications(
                 notificationChunk
             );
-            console.log(`successfully sent notification chunk ${i}`);
+            this.logger.log({
+                msg: "sent notification chunk",
+                chunk: i + 1,
+                time,
+            });
             await this.ticketRepository.putMany(tickets);
-            console.log(
-                "successfully saved tickets",
-                tickets.map(t => `${t.type} ${t.uuid}`).join(", ")
-            );
         }
-        console.log(`successfully processed ${subs.length} subs for ${time}`);
+        this.logger.log({
+            msg: `finished sending`,
+            time,
+            processedSubs: subs.length,
+        });
     }
 }

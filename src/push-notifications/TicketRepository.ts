@@ -52,6 +52,10 @@ export class TicketRepository {
                 })
                 .promise();
         }
+        this.logger.log({
+            msg: "successfully put tickets",
+            tickets: tickets.map(t => t.uuid),
+        });
     }
 
     async getSuccessTickets() {
