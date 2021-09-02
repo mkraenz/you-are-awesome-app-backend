@@ -28,7 +28,6 @@
         "expo-server-sdk": "^3.6.0",
         "lodash": "^4.17.21",
         "nodemailer": "^6.6.2",
-        "serverless-plugin-aws-alerts": "^1.7.3",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
@@ -51,6 +50,7 @@
         "serverless": "^2.50.0",
         "serverless-iam-roles-per-function": "^3.2.0",
         "serverless-offline": "^7.0.0",
+        "serverless-plugin-aws-alerts": "^1.7.3",
         "serverless-plugin-typescript": "^1.1.9",
         "serverless-s3-sync": "^1.17.1",
         "ts-jest": "^26.5.6",
