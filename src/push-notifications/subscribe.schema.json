@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Subscribe Request Body",
+    "type": "object",
+    "properties": {
+        "token": {
+            "type": "string",
+            "pattern": "^Expo(?:nent)?PushToken\\[.*\\]$"
+        },
+        "hour": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 23
+        },
+        "minute": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 59
+        }
+    },
+    "required": ["token", "hour", "minute"]
+}

@@ -104,7 +104,13 @@ functions:
     events:
       - http:
           path: push-notifications/subscribe
-          method: post
+          method: post # TODO #535 change to put for indicating that multiple puts will overwrite existing
+          request:
+            schemas:
+              application/json:
+                schema: ${file(src/push-notifications/subscribe.schema.json)}
+                name: PutPushNotifSubscription
+                description: "Validation model for Creating or Updating Push Notification Subscriptions"
     environment:
       REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
@@ -133,10 +139,10 @@ functions:
 
   sendPushNotif2:
     handler: src/push-notifications/send.handler
-    events:
-      - eventBridge:
-          schedule: rate(1 minute)
-          description: Trigger lambda to send push notifications for the event time
+    # events:
+    #   - eventBridge:
+    #       schedule: rate(1 minute)
+    #       description: Trigger lambda to send push notifications for the event time
     environment:
       REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}

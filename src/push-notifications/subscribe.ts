@@ -5,18 +5,9 @@ import {
 } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
-import {
-    IsDefined,
-    IsInt,
-    IsString,
-    Max,
-    Min,
-    validate,
-} from "class-validator";
-import { InvalidArgument } from "../util/custom.error";
 import { parse } from "../utils/parse";
 import { respond } from "../utils/respond";
-import { assertEnvVar } from "../validation/assert";
+import { assertEnvVar, assertToken } from "../validation/assert";
 import { SubscriptionRepository } from "./SubscriptionRepository";
 
 interface IBody {
@@ -25,25 +16,17 @@ interface IBody {
     minute: number;
 }
 
-export class Body implements IBody {
+class Body implements IBody {
     constructor(param: IBody) {
         this.token = param.token;
         this.hour = param.hour;
         this.minute = param.minute;
     }
 
-    @IsString()
-    @IsDefined()
-    token: string; // TODO #535 use expo's isValidToken
+    token: string;
 
-    @IsInt()
-    @Min(0)
-    @Max(23)
     hour: number;
 
-    @IsInt()
-    @Min(0)
-    @Max(60)
     minute: number;
 
     /** @returns in format HH:mm */
@@ -51,13 +34,6 @@ export class Body implements IBody {
         const date = new Date();
         date.setHours(this.hour, this.minute);
         return date.toTimeString().slice(0, 5);
-    }
-
-    public async validate() {
-        const errors = await validate(this);
-        if (errors.length > 0) {
-            throw new InvalidArgument(JSON.stringify(errors));
-        }
     }
 }
 
@@ -77,14 +53,14 @@ export const handler: Handler<
     APIGatewayProxyResultV2<{ statusCode: number }>
 > = async event => {
     try {
+        // most validation happens on API GW
         const { body } = event;
-        if (!body) throw new InvalidArgument("Missing request body");
-        const parsedBody = await parse<IBody>(body);
-        const bodyInstance = new Body(parsedBody);
-        await bodyInstance.validate();
+        const parsedBody = await parse<IBody>(body!);
+        const { token, time } = new Body(parsedBody);
+        assertToken(token);
 
-        await subs.put(bodyInstance.token, bodyInstance.time);
-        return respond(201, { success: true });
+        await subs.put(token, time);
+        return respond(200, { success: true });
     } catch (error) {
         return respond(500, error);
     }

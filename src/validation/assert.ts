@@ -1,8 +1,9 @@
 import { Expo } from "expo-server-sdk";
+import { InvalidArgument } from "../util/custom.error";
 export const assertToken = (expoPushToken: string) => {
     if (!Expo.isExpoPushToken(expoPushToken)) {
-        throw new Error(
-            `Not a valid push token. Got ${JSON.stringify(expoPushToken)}`
+        throw new InvalidArgument(
+            `Not a valid expo push token. Got ${JSON.stringify(expoPushToken)}`
         );
     }
 };
