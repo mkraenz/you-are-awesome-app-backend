@@ -22,3 +22,11 @@ export class FailedParsing extends Error {
         this.name = "ParsingFailedError";
     }
 }
+
+export class MissingSetup extends Error {
+    constructor(msg: string) {
+        super(`Missing setup: ${msg}`);
+        Object.setPrototypeOf(this, MissingSetup.prototype);
+        this.name = "MissingSetupError";
+    }
+}

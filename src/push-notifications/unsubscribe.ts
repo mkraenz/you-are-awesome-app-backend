@@ -10,6 +10,7 @@ import { InvalidArgument } from "../util/custom.error";
 import { parse } from "../utils/parse";
 import { respond } from "../utils/respond";
 import { assertEnvVar } from "../validation/assert";
+import { SubscriptionRepository } from "./SubscriptionRepository";
 
 interface IBody {
     token: string;
@@ -41,6 +42,7 @@ const serviceConfigOptions: ServiceConfigurationOptions = {
 const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
 assertEnvVar(process.env.SUBSCRIPTION_TABLE, "SUBSCRIPTION_TABLE");
 const TableName = process.env.SUBSCRIPTION_TABLE;
+const subs = new SubscriptionRepository(docClient, TableName);
 
 export const handler: Handler<
     APIGatewayProxyEvent,
@@ -53,12 +55,7 @@ export const handler: Handler<
         const bodyInstance = new Body(parsedBody);
         await bodyInstance.validate();
 
-        await docClient
-            .delete({
-                TableName,
-                Key: { expoPushToken: bodyInstance.token },
-            })
-            .promise();
+        await subs.delete(bodyInstance.token);
         return respond(202, { success: true });
     } catch (error) {
         return respond(500, error);

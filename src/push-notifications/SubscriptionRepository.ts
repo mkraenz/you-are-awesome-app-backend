@@ -1,4 +1,5 @@
 import AWS from "aws-sdk";
+import { MissingSetup } from "../util/custom.error";
 import { MAX_DYNAMO_DB_BATCH_SIZE } from "./TicketRepository";
 
 export interface Subscription {
@@ -11,10 +12,15 @@ export class SubscriptionRepository {
     constructor(
         private readonly docClient: AWS.DynamoDB.DocumentClient,
         private readonly table: string,
-        private readonly byTimeIndex: string
+        private readonly byTimeIndex = ""
     ) {}
 
     async getAllByTime(time: string) {
+        if (!this.byTimeIndex) {
+            throw new MissingSetup(
+                "To use SubscriptionRepository.getAllByTime(), you must construct the instance with a TimeIndex"
+            );
+        }
         const subsRes = await this.docClient
             .query({
                 TableName: this.table,
@@ -33,9 +39,27 @@ export class SubscriptionRepository {
         }
         return subsRes.Items as Subscription[];
     }
-    async get() {}
 
-    async put() {}
+    async put(expoPushToken: string, time: string) {
+        await this.docClient
+            .put({
+                TableName: this.table,
+                Item: {
+                    expoPushToken,
+                    time,
+                },
+            })
+            .promise();
+    }
+
+    async delete(expoPushToken: string) {
+        await this.docClient
+            .delete({
+                TableName: this.table,
+                Key: { expoPushToken },
+            })
+            .promise();
+    }
 
     async removeMany(tokens: string[]) {
         if (tokens.length > MAX_DYNAMO_DB_BATCH_SIZE) {
