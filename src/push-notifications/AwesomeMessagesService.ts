@@ -1,7 +1,8 @@
 import axios from "axios";
-import { random } from "lodash";
+import { IsDefined, IsISO8601, IsString, validateSync } from "class-validator";
+import { isNil, random } from "lodash";
 
-export interface AwesomeMessage {
+export interface IAwesomeMessage {
     id: string;
     isodate: string;
     text: string;
@@ -9,10 +10,54 @@ export interface AwesomeMessage {
     country: string;
 }
 
+class AwesomeMessage {
+    @IsDefined()
+    @IsString()
+    public id: string;
+
+    @IsString()
+    @IsDefined()
+    @IsISO8601()
+    public isodate: string;
+
+    @IsString()
+    @IsDefined()
+    public text: string;
+
+    @IsString()
+    @IsDefined()
+    public author: string;
+
+    @IsString()
+    @IsDefined()
+    public country: string;
+
+    constructor(msg: IAwesomeMessage) {
+        this.id = msg.id;
+        this.isodate = msg.isodate;
+        this.text = msg.text;
+        this.author = msg.author;
+        this.country = msg.country;
+    }
+
+    public static isIAwesomeMessage(msg: unknown): msg is IAwesomeMessage {
+        // Note: null is of type object. WTF JS?
+        if (typeof msg !== "object" || isNil(msg)) {
+            return false;
+        }
+        return new AwesomeMessage(msg as IAwesomeMessage).validate();
+    }
+
+    private validate() {
+        const errors = validateSync(this);
+        return errors.length === 0;
+    }
+}
+
 export class AwesomeMessagesService {
     constructor(private readonly messageS3Uri: string) {}
 
-    private cachedMessages: AwesomeMessage[] = [];
+    private cachedMessages: IAwesomeMessage[] = [];
 
     public async getTodaysMessage(): Promise<{
         text: string;
@@ -36,7 +81,7 @@ export class AwesomeMessagesService {
         return this.formatMessage(message);
     }
 
-    private formatMessage(message: AwesomeMessage) {
+    private formatMessage(message: IAwesomeMessage) {
         return {
             text: message.text,
             authorAndCountry: `${message.author} from ${message.country}`,
@@ -44,20 +89,18 @@ export class AwesomeMessagesService {
     }
 
     private async fetchMessages() {
-        const { data: messages } = await axios.get<AwesomeMessage[]>(
+        const { data: messages } = await axios.get<IAwesomeMessage[]>(
             this.messageS3Uri
         );
-        // TODO assert messages not empty + isAwesomeMessage, else filter
-        this.cachedMessages = messages;
+        const validMessages = messages.filter(AwesomeMessage.isIAwesomeMessage);
+        this.cachedMessages = validMessages;
     }
 
     private pickTodaysMessage(
-        messages: AwesomeMessage[]
-    ): AwesomeMessage | undefined {
+        messages: IAwesomeMessage[]
+    ): IAwesomeMessage | undefined {
         const today = new Date();
-        const todayString = `${today.getUTCFullYear()}-${
-            today.getUTCMonth() + 1
-        }-${today.getUTCDate()}`;
+        const todayString = today.toISOString().split("T")[0];
         const message = messages.find(m => m.isodate.includes(todayString));
         return message;
     }

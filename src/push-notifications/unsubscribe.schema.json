@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Unsubscribe Request Body",
+    "type": "object",
+    "properties": {
+        "token": {
+            "type": "string",
+            "pattern": "^Expo(?:nent)?PushToken\\[\\S+\\]$"
+        }
+    },
+    "required": ["token"]
+}

@@ -1,67 +1,12 @@
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 
-// https://github.com/aws/aws-sdk-js/issues/1635#issuecomment-316486871
-const serviceConfigOptions: ServiceConfigurationOptions = {
-    region: "us-west-2",
-    endpoint: "http://localhost:7999", // disable
-};
-
-// control plane -> managing tables, indices
-const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-// data plane -> managing items inside tables
-const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
-
-const TableName = "PushNotificationSubs-prod";
-
-/** WARNING: Cannot be run twice */
-export const createTable = async () => {
-    const table = await dynamodb
-        .createTable({
-            TableName,
-            AttributeDefinitions: [{ AttributeName: "id", AttributeType: "S" }],
-            KeySchema: [
-                {
-                    AttributeName: "id",
-                    KeyType: "HASH",
-                },
-            ],
-            ProvisionedThroughput: {
-                ReadCapacityUnits: 3,
-                WriteCapacityUnits: 3,
-            },
-        })
-        .promise();
-    console.log(table.TableDescription?.TableName);
-};
-
 export const dropTable = async (dynamoDb: AWS.DynamoDB, tableName: string) => {
     await dynamoDb
         .deleteTable({
             TableName: tableName,
         })
         .promise();
-};
-
-export const createActualTable = async () => {
-    const table = await dynamodb
-        .createTable({
-            TableName,
-            KeySchema: [
-                { AttributeName: "time", KeyType: "HASH" }, //Partition key
-                { AttributeName: "expoPushToken", KeyType: "RANGE" }, //Sort key
-            ],
-            AttributeDefinitions: [
-                { AttributeName: "time", AttributeType: "S" }, // hh:mm
-                { AttributeName: "expoPushToken", AttributeType: "S" },
-            ],
-            ProvisionedThroughput: {
-                ReadCapacityUnits: 5,
-                WriteCapacityUnits: 5,
-            },
-        })
-        .promise();
-    console.log(table.TableDescription?.TableName);
 };
 
 export const createSubsTable = async (
@@ -149,7 +94,10 @@ export const createGsiSubsByTime = async (
         .promise();
 };
 
-export const createItem = async () => {
+export const createItem = async (
+    docClient: AWS.DynamoDB.DocumentClient,
+    TableName: string
+) => {
     await docClient
         .put({
             TableName,
@@ -161,14 +109,20 @@ export const createItem = async () => {
         .promise();
 };
 
-const getItem = async () => {
+const getItem = async (
+    docClient: AWS.DynamoDB.DocumentClient,
+    TableName: string
+) => {
     const res = await docClient
         .get({ TableName, Key: { id: "2349534" } })
         .promise();
     console.log(res.Item);
 };
 
-const updateItem = async () => {
+const updateItem = async (
+    docClient: AWS.DynamoDB.DocumentClient,
+    TableName: string
+) => {
     const updated = await docClient
         .update({
             TableName,
@@ -187,7 +141,10 @@ const updateItem = async () => {
     console.log(updated);
 };
 
-const revertUpdateItem = async () => {
+const revertUpdateItem = async (
+    docClient: AWS.DynamoDB.DocumentClient,
+    TableName: string
+) => {
     const updated = await docClient
         .update({
             TableName,
@@ -210,7 +167,10 @@ const revertUpdateItem = async () => {
     console.log(updated);
 };
 
-const deleteItem = async () => {
+const deleteItem = async (
+    docClient: AWS.DynamoDB.DocumentClient,
+    TableName: string
+) => {
     const updated = await docClient
         .delete({
             TableName,
@@ -221,6 +181,18 @@ const deleteItem = async () => {
 };
 
 const main = async () => {
+    // https://github.com/aws/aws-sdk-js/issues/1635#issuecomment-316486871
+    const serviceConfigOptions: ServiceConfigurationOptions = {
+        region: "us-west-2",
+        endpoint: "http://localhost:7999", // disable
+    };
+
+    // control plane -> managing tables, indices
+    const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
+    // data plane -> managing items inside tables
+    const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
+
+    const TableName = "PushNotificationSubs-prod";
     await dropTable(dynamodb, TableName);
     await createSubsTable(dynamodb, TableName);
     await createGsiSubsByTime(dynamodb, TableName, "TimeIndex");
@@ -232,4 +204,4 @@ const main = async () => {
     // await deleteItem();
 };
 
-main();
+// main();

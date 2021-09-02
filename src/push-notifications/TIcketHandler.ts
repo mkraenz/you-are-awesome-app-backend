@@ -1,4 +1,5 @@
 import { partition } from "lodash";
+import { ILogger } from "../util/ILogger";
 import {
     ErrorReceipt,
     ExpoReceiptAdapter,
@@ -11,7 +12,7 @@ const thirtyMins = 30 * 60 * 1000;
 
 export class TicketHandler {
     constructor(
-        private readonly subs: Pick<SubscriptionRepository, "removeMany">,
+        private readonly subs: Pick<SubscriptionRepository, "deleteMany">,
         private readonly tickets: Pick<
             TicketRepository,
             "deleteManySuccessTickets" | "getSuccessTickets"
@@ -20,10 +21,7 @@ export class TicketHandler {
             ExpoReceiptAdapter,
             "chunkSuccessTickets" | "getReceipts"
         >,
-        private readonly logger: {
-            log: (...args: any) => void;
-            error: (...args: any) => void;
-        }
+        private readonly logger: ILogger = console
     ) {}
 
     public async handleSuccessTickets(): Promise<{
@@ -109,7 +107,7 @@ export class TicketHandler {
     private async handleDeviceNotRegisteredError(
         deviceNotRegisteredReceipts: ErrorReceipt[]
     ) {
-        await this.subs.removeMany(
+        await this.subs.deleteMany(
             deviceNotRegisteredReceipts.map(r => r.expoPushToken)
         );
         await this.tickets.deleteManySuccessTickets(

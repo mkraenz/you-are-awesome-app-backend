@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import { MissingSetup } from "../util/custom.error";
+import { ILogger } from "../util/ILogger";
 import { MAX_DYNAMO_DB_BATCH_SIZE } from "./TicketRepository";
 
 export interface Subscription {
@@ -12,10 +13,11 @@ export class SubscriptionRepository {
     constructor(
         private readonly docClient: AWS.DynamoDB.DocumentClient,
         private readonly table: string,
-        private readonly byTimeIndex = ""
+        private readonly byTimeIndex = "",
+        private readonly logger: ILogger = console
     ) {}
 
-    async getAllByTime(time: string) {
+    async getManyByTime(time: string) {
         if (!this.byTimeIndex) {
             throw new MissingSetup(
                 "To use SubscriptionRepository.getAllByTime(), you must construct the instance with a TimeIndex"
@@ -34,9 +36,6 @@ export class SubscriptionRepository {
                 },
             })
             .promise();
-        if (!subsRes.Items) {
-            throw new Error("No subscriptions found");
-        }
         return subsRes.Items as Subscription[];
     }
 
@@ -52,6 +51,21 @@ export class SubscriptionRepository {
             .promise();
     }
 
+    async get(expoPushToken: string) {
+        const res = await this.docClient
+            .get({
+                TableName: this.table,
+                Key: {
+                    expoPushToken,
+                },
+            })
+            .promise();
+        if (!res.Item) {
+            throw new Error("No subscription found");
+        }
+        return res.Item as Subscription;
+    }
+
     async delete(expoPushToken: string) {
         await this.docClient
             .delete({
@@ -61,13 +75,15 @@ export class SubscriptionRepository {
             .promise();
     }
 
-    async removeMany(tokens: string[]) {
+    async deleteMany(tokens: string[]) {
         if (tokens.length > MAX_DYNAMO_DB_BATCH_SIZE) {
             throw new Error(
-                `Too many tokens to delete. Tokens ${tokens.join(", ")}`
+                `Can only delete <=25 items at a time. Tokens ${tokens.join(
+                    ", "
+                )}`
             );
         }
-        console.log("start removing subs by expoIds", tokens);
+        this.logger.log({ msg: "start removing subs", expoPushTokens: tokens });
         await this.docClient
             .batchWrite({
                 RequestItems: {
@@ -81,6 +97,9 @@ export class SubscriptionRepository {
                 },
             })
             .promise();
-        console.log("successfully removed subs by expoIds", tokens);
+        this.logger.log({
+            msg: "successfully removed subs",
+            expoPushTokens: tokens,
+        });
     }
 }

@@ -3,7 +3,7 @@ import { Sender } from "../../src/push-notifications/Sender";
 it("sends notifications and saves tickets to Tickets table", async () => {
     type SenderParams = ConstructorParameters<typeof Sender>;
     const subsRepo: SenderParams[0] = {
-        getAllByTime: jest.fn(async (time: string) => {
+        getManyByTime: jest.fn(async (time: string) => {
             if (time === "17:28") {
                 return [
                     {

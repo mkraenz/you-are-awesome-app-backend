@@ -1,5 +1,6 @@
 import { ExpoPushErrorTicket } from "expo-server-sdk";
 import { chunk } from "lodash";
+import { ILogger } from "../util/ILogger";
 
 export interface SuccessTicket {
     type: "SuccessTicket";
@@ -24,7 +25,8 @@ export const MAX_DYNAMO_DB_BATCH_SIZE = 25;
 export class TicketRepository {
     constructor(
         private readonly dynamoDb: AWS.DynamoDB.DocumentClient,
-        private readonly tableName: string
+        private readonly tableName: string,
+        private readonly logger: ILogger = console
     ) {}
 
     async putMany(tickets: Ticket[]) {
@@ -62,15 +64,17 @@ export class TicketRepository {
 
     async deleteManySuccessTickets(uuids: string[]) {
         if (uuids.length === 0) {
-            console.log("No tickets to delete");
+            this.logger.log({ msg: "No tickets to delete" });
             return;
         }
         if (uuids.length > MAX_DYNAMO_DB_BATCH_SIZE) {
             throw new Error(
-                `Too many success tickets to delete. uuids: ${uuids.join(", ")}`
+                `Can only delete <=25 items at a time. uuids: ${uuids.join(
+                    ", "
+                )}`
             );
         }
-        console.log("start removing tickets by uuids", uuids);
+        this.logger.log({ msg: "start removing tickets", uuids });
         await this.dynamoDb
             .batchWrite({
                 RequestItems: {
@@ -85,6 +89,6 @@ export class TicketRepository {
                 },
             })
             .promise();
-        console.log("removed tickets by uuids", uuids);
+        this.logger.log({ msg: "successfully removed tickets", uuids });
     }
 }

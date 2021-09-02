@@ -6,7 +6,7 @@ export class Sender {
     constructor(
         private readonly subscriptions: Pick<
             SubscriptionRepository,
-            "getAllByTime"
+            "getManyByTime"
         >,
         private readonly expo: Pick<
             ExpoSendAdapter,
@@ -20,7 +20,7 @@ export class Sender {
     ) {}
 
     public async send(time: string) {
-        const subs = await this.subscriptions.getAllByTime(time);
+        const subs = await this.subscriptions.getManyByTime(time);
         if (subs.length === 0) {
             console.log(
                 "No subscriptions found for time ${time}. Skipping sending notifications."

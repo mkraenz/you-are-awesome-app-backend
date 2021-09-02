@@ -10,7 +10,8 @@
         "outDir": ".build",
         "baseUrl": ".",
         "downlevelIteration": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "resolveJsonModule": true
     },
     "include": ["src/**/*", "test/**/*"],
     "exclude": ["node_modules"]

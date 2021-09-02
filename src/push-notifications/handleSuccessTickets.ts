@@ -27,7 +27,7 @@ const subs = new SubscriptionRepository(docClient, subsTable, subsByTimeIndex);
 const expo = new Expo();
 const expoReceipts = new ExpoReceiptAdapter(expo);
 const tickets = new TicketRepository(docClient, ticketTable);
-const ticketHandler = new TicketHandler(subs, tickets, expoReceipts, console);
+const ticketHandler = new TicketHandler(subs, tickets, expoReceipts);
 
 export const handler: Handler = async () => {
     try {

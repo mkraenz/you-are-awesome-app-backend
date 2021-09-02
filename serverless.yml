@@ -127,6 +127,12 @@ functions:
       - http:
           path: push-notifications/unsubscribe
           method: post
+          request:
+            schemas:
+              application/json:
+                schema: ${file(src/push-notifications/unsubscribe.schema.json)}
+                name: PostPushNotifUnsubscribe
+                description: "Validation model for Deleting Push Notification Subscriptions"
     environment:
       REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
