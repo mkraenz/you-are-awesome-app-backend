@@ -1,4 +1,4 @@
-# TODO cleanup by extracting vars to custom.var.xy
+# TODO cleanup by extracting vars to custom.locals.xy
 
 service: youareawesomeapp
 # app and org for use with dashboard.serverless.com
@@ -107,7 +107,7 @@ functions:
           method: post
     environment:
       REGION: ${self:provider.region}
-      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
+      SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -123,7 +123,7 @@ functions:
           method: post
     environment:
       REGION: ${self:provider.region}
-      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
+      SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -139,8 +139,8 @@ functions:
     #       schedule: rate(1 minute)
     environment:
       REGION: ${self:provider.region}
-      SUBSCRIPTION_TABLE: PushNotifSubs-${self:provider.stage}
-      SUBSCRIPTIONS_BY_TIME_INDEX: TimeIndex
+      SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
+      SUBSCRIPTIONS_BY_TIME_INDEX: ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
       AWESOME_MESSAGES_URI: "https://youareawesomeapp-current-message.s3.eu-central-1.amazonaws.com/messages.json"
     iamRoleStatements:
@@ -158,25 +158,33 @@ functions:
               - "/"
               - - Fn::GetAtt: [PushNotifSubsTable, Arn]
                 - index
-                - TimeIndex
+                - ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
 
-  # handleSuccessTickets:
-  #   handler: src/push-notifications/handleSuccessTickets.handler
-  #   description: "Read expo push notification success-tickets from dynamoDb table and handle corresponding receipts by either deleting the ticket on successfully sent push notification, or possibly unregistering from push notification on error."
-  #   events:
-  #     - schedule:
-  #         rate: rate(8 hours)
-  #         description: "Invoke lambda handleSuccessTickets"
-  #   environment:
-  #     REGION: ${self:provider.region}
-  #     TICKETS_TABLE_NAME: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
-  #   iamRoleStatements:
-  #     - Effect: Allow
-  #       Action:
-  #         - dynamodb:Query
-  #         - dynamodb:BatchWriteItem
-  #       Resource:
-  #         - Fn::GetAtt: [PushNotifTicketsTable, Arn]
+  handlePushNotifSuccessTickets:
+    handler: src/push-notifications/handleSuccessTickets.handler
+    description: "Read expo push notification success-tickets from dynamoDb table, exchange tickets for receipts with expo, and handle corresponding receipts by either deleting the ticket on successfully sent push notification, or possibly unregistering from push notification on error."
+    # TODO #535 enable
+    # events:
+    #   - eventBridge:
+    #       schedule: rate(8 hours)
+    #       description: Invoke lambda handlePushNotifSuccessTickets
+    environment:
+      REGION: ${self:provider.region}
+      SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
+      SUBSCRIPTIONS_BY_TIME_INDEX: ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
+      TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:BatchWriteItem
+        Resource:
+          - Fn::GetAtt: [PushNotifTicketsTable, Arn]
+      - Effect: Allow
+        Action:
+          - dynamodb:BatchWriteItem
+        Resource:
+          - Fn::GetAtt: [PushNotificationSubsTable, Arn]
 
   # only called via RPC => no events
   gsx2json:
