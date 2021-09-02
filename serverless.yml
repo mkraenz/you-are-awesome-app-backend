@@ -133,10 +133,10 @@ functions:
 
   sendPushNotif2:
     handler: src/push-notifications/send.handler
-    # TODO enable
-    # events:
-    #   - eventBridge:
-    #       schedule: rate(1 minute)
+    events:
+      - eventBridge:
+          schedule: rate(1 minute)
+          description: Trigger lambda to send push notifications for the event time
     environment:
       REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
@@ -162,12 +162,11 @@ functions:
 
   handlePushNotifSuccessTickets:
     handler: src/push-notifications/handleSuccessTickets.handler
-    description: "Read expo push notification success-tickets from dynamoDb table, exchange tickets for receipts with expo, and handle corresponding receipts by either deleting the ticket on successfully sent push notification, or possibly unregistering from push notification on error."
-    # TODO #535 enable
-    # events:
-    #   - eventBridge:
-    #       schedule: rate(8 hours)
-    #       description: Invoke lambda handlePushNotifSuccessTickets
+    description: Read expo push notification success-tickets from dynamodb, exchange tickets for receipts with expo, handle receipts by deleting the ticket on successfully delivered notification, or possibly unregistering from notifications on error
+    events:
+      - eventBridge:
+          schedule: rate(6 hours)
+          description: Invoke lambda handlePushNotifSuccessTickets
     environment:
       REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
@@ -184,7 +183,7 @@ functions:
         Action:
           - dynamodb:BatchWriteItem
         Resource:
-          - Fn::GetAtt: [PushNotificationSubsTable, Arn]
+          - Fn::GetAtt: [PushNotifSubsTable, Arn]
 
   # only called via RPC => no events
   gsx2json:
