@@ -172,7 +172,7 @@ functions:
                 - index
                 - ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
 
-  # TODO #535 split into exchangeTicketsForReceipts, handleDeviceNotFound,
+  # TODO #535 split into exchangeTicketsForReceipts, handleDeviceNotFoundReceipt, etc
   handlePushNotifSuccessTickets:
     handler: src/push-notifications/handleSuccessTickets.handler
     description: Read expo push notification success-tickets from dynamodb, exchange tickets for receipts with expo, handle receipts by deleting the ticket on successfully delivered notification, or possibly unregistering from notifications on error
