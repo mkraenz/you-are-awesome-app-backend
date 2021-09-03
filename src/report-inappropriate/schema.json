@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Report Inappropriate Request Body",
+    "type": "object",
+    "properties": {
+        "messageId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "reason": {
+            "type": "string",
+            "minLength": 1
+        },
+        "comment": {
+            "type": "string"
+        }
+    },
+    "required": ["messageId", "reason"]
+}

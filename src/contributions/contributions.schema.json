@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Subscribe Request Body",
+    "title": "Contributions Request Body",
     "type": "object",
     "properties": {
         "id": {

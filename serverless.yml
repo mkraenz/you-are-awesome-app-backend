@@ -30,11 +30,17 @@ provider:
 
 functions:
   reportInappropriate:
-    handler: src/report-inappropriate.handler
+    handler: src/report-inappropriate/index.handler
     events:
       - http:
           path: "/reportinappropriate/"
           method: post
+          request:
+            schemas:
+              application/json:
+                schema: ${file(src/report-inappropriate/schema.json)}
+                name: Report
+                description: "Validation model to report inappropriate content"
     environment:
       SMTP_HOST: ${env:SMTP_HOST}
       SMTP_USERNAME: ${env:SMTP_USERNAME}
