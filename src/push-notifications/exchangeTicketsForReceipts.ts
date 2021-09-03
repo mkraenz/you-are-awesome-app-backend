@@ -4,9 +4,9 @@ import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 import Expo from "expo-server-sdk";
 import { respond } from "../utils/respond";
 import { ExpoReceiptAdapter } from "./ExpoReceiptsAdapter";
-import { handleSuccessTicketEnv } from "./handleSuccessTickets.env";
+import { handleSuccessTicketEnv } from "./exchangeTicketsForReceipts.env";
 import { SubscriptionRepository } from "./SubscriptionRepository";
-import { TicketHandler } from "./TIcketHandler";
+import { TicketHandler } from "./TicketExchange";
 import { TicketRepository } from "./TicketRepository";
 
 const env = handleSuccessTicketEnv;

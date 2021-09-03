@@ -1,5 +1,5 @@
 import MockDate from "mockdate";
-import { TicketHandler } from "../../src/push-notifications/TIcketHandler";
+import { TicketHandler } from "../../src/push-notifications/TicketExchange";
 import { mockLogger } from "../../src/util/ILogger";
 import { expectExtension } from "../utils";
 
