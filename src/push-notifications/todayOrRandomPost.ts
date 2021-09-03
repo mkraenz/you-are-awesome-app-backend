@@ -1,4 +1,4 @@
-import { random } from "lodash";
+import { sample } from "lodash";
 import { PostWithDate } from "./IPost";
 import { maybeGetTodaysPost } from "./maybeGetTodaysPost";
 
@@ -15,6 +15,6 @@ export function todayOrRandomPost(
     if (todaysPost) {
         return todaysPost;
     }
-    const post = posts[random(posts.length - 1)];
+    const post = sample(posts)!;
     return post;
 }

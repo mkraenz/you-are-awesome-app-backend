@@ -1,12 +1,9 @@
-import {
-    APIGatewayProxyEvent,
-    APIGatewayProxyResultV2,
-    Handler,
-} from "aws-lambda";
+import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
+import { APIGatewayValidatedProxyEvent } from "../utils/aws";
 import { parse } from "../utils/parse";
-import { respond } from "../utils/respond";
+import { respond, respondError } from "../utils/respond";
 import { assertEnvVar, assertToken } from "../validation/assert";
 import { SubscriptionRepository } from "./SubscriptionRepository";
 
@@ -49,19 +46,19 @@ const TableName = process.env.SUBSCRIPTION_TABLE;
 const subs = new SubscriptionRepository(docClient, TableName);
 
 export const handler: Handler<
-    APIGatewayProxyEvent,
+    APIGatewayValidatedProxyEvent,
     APIGatewayProxyResultV2<{ statusCode: number }>
 > = async event => {
     try {
-        // most validation happens on API GW
+        // validation on API Gateway
         const { body } = event;
-        const parsedBody = await parse<IBody>(body!);
+        const parsedBody = await parse<IBody>(body);
         const { token, time } = new Body(parsedBody);
         assertToken(token);
 
         await subs.put(token, time);
         return respond(200, { success: true });
     } catch (error) {
-        return respond(500, error);
+        return respondError(error);
     }
 };

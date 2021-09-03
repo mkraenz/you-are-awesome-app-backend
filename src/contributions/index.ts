@@ -1,7 +1,6 @@
 import type { Handler } from "aws-lambda";
-import { FailedParsing, InvalidArgument } from "../util/custom.error";
 import { parse } from "../utils/parse";
-import { respond } from "../utils/respond";
+import { respond, respondError } from "../utils/respond";
 import { appendToGSheets, setupGoogleAuth } from "./appendToGSheets";
 import { assertEnv, unescapeNewline } from "./environment";
 import { IMessage } from "./IMessage";
@@ -26,8 +25,6 @@ export const writeContributionToGsheet: Handler<{
         await appendToGSheets(message, auth, env.CONTRIBUTIONS_SPREADSHEET_ID);
         return respond(201, message);
     } catch (error) {
-        if (error instanceof FailedParsing) return respond(400, error);
-        if (error instanceof InvalidArgument) return respond(400, error);
-        return respond(500, error);
+        return respondError(error);
     }
 };

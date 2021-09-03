@@ -1,36 +1,14 @@
-import {
-    APIGatewayProxyEvent,
-    APIGatewayProxyResultV2,
-    Handler,
-} from "aws-lambda";
+import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
-import { IsDefined, IsString, validate } from "class-validator";
-import { InvalidArgument } from "../util/custom.error";
+import { APIGatewayValidatedProxyEvent } from "../utils/aws";
 import { parse } from "../utils/parse";
-import { respond } from "../utils/respond";
-import { assertEnvVar } from "../validation/assert";
+import { respond, respondError } from "../utils/respond";
+import { assertEnvVar, assertToken } from "../validation/assert";
 import { SubscriptionRepository } from "./SubscriptionRepository";
 
 interface IBody {
     token: string;
-}
-
-export class Body implements IBody {
-    constructor(param: IBody) {
-        this.token = param.token;
-    }
-
-    @IsString()
-    @IsDefined()
-    token: string;
-
-    public async validate() {
-        const errors = await validate(this);
-        if (errors.length > 0) {
-            throw new InvalidArgument(JSON.stringify(errors));
-        }
-    }
 }
 
 // https://github.com/aws/aws-sdk-js/issues/1635#issuecomment-316486871
@@ -45,19 +23,19 @@ const TableName = process.env.SUBSCRIPTION_TABLE;
 const subs = new SubscriptionRepository(docClient, TableName);
 
 export const handler: Handler<
-    APIGatewayProxyEvent,
+    APIGatewayValidatedProxyEvent,
     APIGatewayProxyResultV2<{ statusCode: number }>
 > = async event => {
     try {
+        // validation on API Gateway
         const { body } = event;
-        if (!body) throw new InvalidArgument("Missing request body");
-        const parsedBody = await parse<IBody>(body);
-        const bodyInstance = new Body(parsedBody);
-        await bodyInstance.validate();
+        const { token } = await parse<IBody>(body);
+        assertToken(token);
 
-        await subs.delete(bodyInstance.token);
+        await subs.delete(token);
+
         return respond(202, { success: true });
     } catch (error) {
-        return respond(500, error);
+        return respondError(error);
     }
 };

@@ -1,5 +1,8 @@
 import { Expo } from "expo-server-sdk";
-import { InvalidArgument } from "../util/custom.error";
+import {
+    InvalidArgument,
+    MissingEnvironmentVariable,
+} from "../util/custom.error";
 export const assertToken = (expoPushToken: string) => {
     if (!Expo.isExpoPushToken(expoPushToken)) {
         throw new InvalidArgument(
@@ -13,6 +16,6 @@ export function assertEnvVar(
     name: string
 ): asserts value is string {
     if (!value) {
-        throw new Error(`Missing Env var: ${name}`);
+        throw new MissingEnvironmentVariable(name);
     }
 }

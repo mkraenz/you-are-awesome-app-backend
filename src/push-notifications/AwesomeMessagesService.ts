@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IsDefined, IsISO8601, IsString, validateSync } from "class-validator";
-import { isNil, random } from "lodash";
+import { isNil, sample } from "lodash";
 
 export interface IAwesomeMessage {
     id: string;
@@ -72,8 +72,7 @@ export class AwesomeMessagesService {
             await this.fetchMessages();
             const message = this.pickTodaysMessage(this.cachedMessages);
             if (!message) {
-                const randomMessage =
-                    this.cachedMessages[random(this.cachedMessages.length - 1)];
+                const randomMessage = sample(this.cachedMessages)!;
                 return this.formatMessage(randomMessage);
             }
             return this.formatMessage(message);

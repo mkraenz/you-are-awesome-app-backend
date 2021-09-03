@@ -112,7 +112,7 @@ functions:
                 name: PutPushNotifSubscription
                 description: "Validation model for Creating or Updating Push Notification Subscriptions"
     environment:
-      REGION: ${self:provider.region}
+      REGION: ${self:provider.region} # TODO #535 check whether we can instead use process.env.AWS_REGION
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
     iamRoleStatements:
       - Effect: Allow
@@ -172,6 +172,7 @@ functions:
                 - index
                 - ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
 
+  # TODO #535 split into exchangeTicketsForReceipts, handleDeviceNotFound,
   handlePushNotifSuccessTickets:
     handler: src/push-notifications/handleSuccessTickets.handler
     description: Read expo push notification success-tickets from dynamodb, exchange tickets for receipts with expo, handle receipts by deleting the ticket on successfully delivered notification, or possibly unregistering from notifications on error
