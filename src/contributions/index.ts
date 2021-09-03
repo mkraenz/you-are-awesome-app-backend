@@ -25,6 +25,6 @@ export const writeContributionToGsheet: Handler<{
         await appendToGSheets(message, auth, env.CONTRIBUTIONS_SPREADSHEET_ID);
         return respond(201, message);
     } catch (error) {
-        return respondError(error);
+        return respondError(error as Error);
     }
 };

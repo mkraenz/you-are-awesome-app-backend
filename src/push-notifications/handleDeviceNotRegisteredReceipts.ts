@@ -1,16 +1,16 @@
 import { Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
-import Expo from "expo-server-sdk";
 import { respond } from "../utils/respond";
+import { assertEnvVar } from "../validation/assert";
+import { DeviceNotRegisteredHandler } from "./DeviceNotRegisteredHandler";
 import { handleSuccessTicketEnv } from "./exchangeTicketsForReceipts.env";
-import { ExpoReceiptAdapter } from "./ExpoReceiptsAdapter";
-import { TicketExchange } from "./TicketExchange";
+import { SubscriptionRepository } from "./SubscriptionRepository";
 import { TicketRepository } from "./TicketRepository";
 
 const env = handleSuccessTicketEnv;
-const { TICKET_TABLE: ticketTable } = env;
-
+const { SUBSCRIPTION_TABLE: subsTable, TICKET_TABLE: ticketTable } = env;
+assertEnvVar(subsTable, "SUBSCRIPTION_TABLE");
 const serviceConfigOptions: ServiceConfigurationOptions = {
     region: env.AWS_REGION,
     endpoint: env.IS_OFFLINE ? "http://localhost:7999" : undefined,
@@ -18,14 +18,13 @@ const serviceConfigOptions: ServiceConfigurationOptions = {
 
 const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
 
-const expo = new Expo();
-const expoReceipts = new ExpoReceiptAdapter(expo);
+const subs = new SubscriptionRepository(docClient, subsTable);
 const tickets = new TicketRepository(docClient, ticketTable);
-const ticketHandler = new TicketExchange(tickets, expoReceipts);
+const dnr = new DeviceNotRegisteredHandler(tickets, subs);
 
 export const handler: Handler = async () => {
     try {
-        const result = await ticketHandler.handleSuccessTickets();
+        const result = await dnr.unsubscribeAffectedExpoPushTokens();
         return respond(200, { success: true, ...result });
     } catch (error) {
         return respond(500, error as Error);

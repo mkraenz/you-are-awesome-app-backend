@@ -1,7 +1,6 @@
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 import {
-    ErrorTicket,
     Ticket,
     TicketRepository,
 } from "../../src/push-notifications/TicketRepository";
@@ -32,9 +31,9 @@ it("puts a success ticket and can read it back", async () => {
         {
             type: "SuccessTicket",
             expoPushToken: "ExponentPushToken[123]",
-            receiptId: "my-receipt-id",
-            timestamp: "2021-08-27T20:18:12.000Z",
             uuid: "my-uuid",
+            timestamp: "2021-08-27T20:18:12.000Z",
+            receiptId: "my-receipt-id",
         },
     ];
     const repo = new TicketRepository(docClient, TableName, mockLogger);
@@ -48,24 +47,32 @@ it("puts a success ticket and can read it back", async () => {
 });
 
 it("does not return error tickets when getting success tickets", async () => {
-    const tickets: ErrorTicket[] = [
+    const tickets: Ticket[] = [
         {
-            type: "ErrorTicket",
+            type: "DeviceNotRegisteredReceipt",
             expoPushToken: "ExponentPushToken[123]",
-            timestamp: "2021-08-27T20:18:12.000Z",
             uuid: "my-uuid",
-            status: "error",
+            timestamp: "2021-08-27T20:18:12.000Z",
             message:
                 '"\\"ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]\\" is not a registered push notification recipient",',
-            details: {
-                error: "DeviceNotRegistered",
-            },
         },
     ];
     const repo = new TicketRepository(docClient, TableName, mockLogger);
 
     await repo.putMany(tickets);
     const ticketsFromDb = await repo.getSuccessTickets();
+
+    expect(ticketsFromDb).toEqual([]);
+});
+
+it("does nothing when deleting nonexisting tickets", async () => {
+    const repo = new TicketRepository(docClient, TableName, mockLogger);
+
+    await repo.deleteMany(
+        ["asdf", "i dont exist", "where did all my chips go?"],
+        "DeviceNotRegisteredReceipt"
+    );
+    const ticketsFromDb = await repo.getMany("DeviceNotRegisteredReceipt");
 
     expect(ticketsFromDb).toEqual([]);
 });

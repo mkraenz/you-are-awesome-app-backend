@@ -19,7 +19,7 @@ export const handler: Handler<{
         console.log({ returnedNumOfRows: spreadsheetAsJson.length });
         return respond(200, { rows: spreadsheetAsJson });
     } catch (error) {
-        return respond(500, error);
+        return respond(500, error as Error);
     }
 };
 

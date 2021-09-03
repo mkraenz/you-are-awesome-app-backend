@@ -100,6 +100,6 @@ export const handler: Handler<Pick<EventBridgeScheduledEvent, "time">> =
             await sender.send(body.time);
             return respond(200, { success: true });
         } catch (error) {
-            return respond(500, error);
+            return respond(500, error as Error);
         }
     };

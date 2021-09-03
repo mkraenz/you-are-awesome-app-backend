@@ -2,6 +2,7 @@ import Expo, { ExpoPushMessage } from "expo-server-sdk";
 import { v4 } from "uuid";
 import { Subscription } from "./SubscriptionRepository";
 import { Ticket } from "./TicketRepository";
+import { toErrorReceiptType } from "./toErrorReceiptType";
 
 export class ExpoSendAdapter {
     constructor(
@@ -50,11 +51,11 @@ export class ExpoSendAdapter {
                 };
             }
             return {
-                type: "ErrorTicket",
+                type: toErrorReceiptType(ticket),
                 expoPushToken: notification.to as string,
                 uuid: v4(),
                 timestamp: timestamp,
-                ...ticket,
+                message: ticket.message,
             };
         });
         return tickets;

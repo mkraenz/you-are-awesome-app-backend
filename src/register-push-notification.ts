@@ -4,7 +4,7 @@ import { fetchCronJobs } from "./cron/fetchCronJobs";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
 import { isCronTime } from "./cron/isCrontime";
 import { encrypt, hash } from "./util/crypto";
-import { respond } from "./utils/respond";
+import { respond, respondError } from "./utils/respond";
 
 export async function handler(
     // TODO: event is external so we cannot control it's shape => validate at runtime too
@@ -31,7 +31,7 @@ export async function handler(
         const resBodyObj = { message: "Success", cronJobId };
         return respond(200, resBodyObj);
     } catch (error) {
-        return respond(500, error);
+        return respondError(error as Error);
     }
 }
 

@@ -36,6 +36,6 @@ export const handler: Handler<
 
         return respond(202, { success: true });
     } catch (error) {
-        return respondError(error);
+        return respondError(error as Error);
     }
 };

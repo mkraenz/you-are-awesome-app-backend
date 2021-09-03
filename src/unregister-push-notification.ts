@@ -4,7 +4,7 @@ import { deleteCronJob } from "./cron/deleteCronJob";
 import { fetchCronJobs } from "./cron/fetchCronJobs";
 import { findCronJobByToken } from "./cron/findCronJobByToken";
 import { hash } from "./util/crypto";
-import { respond } from "./utils/respond";
+import { respond, respondError } from "./utils/respond";
 import { assertToken } from "./validation/assert";
 
 export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
@@ -30,7 +30,7 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
         };
         return respond(200, resBody);
     } catch (error) {
-        return respond(500, error);
+        return respondError(error as Error);
     }
 };
 

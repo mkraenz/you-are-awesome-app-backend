@@ -1,4 +1,3 @@
-import { partition } from "lodash";
 import { v4 } from "uuid";
 import { ILogger } from "../util/ILogger";
 import {
@@ -6,17 +5,16 @@ import {
     ExpoReceiptAdapter,
     SuccessReceipt,
 } from "./ExpoReceiptsAdapter";
-import { SubscriptionRepository } from "./SubscriptionRepository";
 import { SuccessTicket, TicketRepository } from "./TicketRepository";
+import { toErrorReceiptType } from "./toErrorReceiptType";
 
 const thirtyMins = 30 * 60 * 1000;
 
-export class TicketHandler {
+export class TicketExchange {
     constructor(
-        private readonly subs: Pick<SubscriptionRepository, "deleteMany">,
         private readonly tickets: Pick<
             TicketRepository,
-            "deleteManySuccessTickets" | "getSuccessTickets" | "putMany"
+            "deleteMany" | "getSuccessTickets" | "putMany"
         >,
         private readonly expo: Pick<
             ExpoReceiptAdapter,
@@ -71,29 +69,36 @@ export class TicketHandler {
                 successReceipts: successReceipts.length,
                 errorReceipts: errorReceipts.length,
             });
-            await this.tickets.deleteManySuccessTickets(
-                successReceipts.map(r => r.ticketUuid)
+
+            await this.putErrorReceipts(errorReceipts);
+
+            await this.tickets.deleteMany(
+                [...successReceipts, ...errorReceipts].map(r => r.ticketUuid),
+                "SuccessTicket"
             );
             this.logger.log({
-                msg: "deleted success tickets with success receipts",
-                successTickets: successTickets.length,
+                msg: "finished chunk",
+                currentChunk: i + 1,
             });
-            const [deviceNotRegisteredReceipts, otherErrors] = partition(
-                errorReceipts,
-                e => e.details?.error === "DeviceNotRegistered"
-            );
-            await this.handleOtherErrors(otherErrors);
-            if (deviceNotRegisteredReceipts.length > 0) {
-                await this.handleDeviceNotRegisteredError(
-                    deviceNotRegisteredReceipts
-                );
-            }
         }
         this.logger.log({
-            msg: "successfully handled all success tickets",
+            msg: "successfully exchanged all success tickets",
             successTickets: successTickets.length,
         });
         return { ticketsProcessed: successTickets.length };
+    }
+
+    private async putErrorReceipts(receipts: ErrorReceipt[]) {
+        await this.tickets.putMany(
+            receipts.map(r => ({
+                type: toErrorReceiptType(r),
+                uuid: v4(),
+                expoPushToken: r.expoPushToken,
+                message: r.message,
+                receiptId: r.receiptId,
+                timestamp: new Date().toISOString(),
+            }))
+        );
     }
 
     private filterOutTooYoungTickets(allSuccessTickets: SuccessTicket[]) {
@@ -102,44 +107,5 @@ export class TicketHandler {
             t => t.timestamp < thirtyMinsAgo
         );
         return { successTickets, thirtyMinsAgo };
-    }
-
-    private async handleDeviceNotRegisteredError(
-        deviceNotRegisteredReceipts: ErrorReceipt[]
-    ) {
-        await this.subs.deleteMany(
-            deviceNotRegisteredReceipts.map(r => r.expoPushToken)
-        );
-        await this.tickets.deleteManySuccessTickets(
-            deviceNotRegisteredReceipts.map(r => r.ticketUuid)
-        );
-    }
-
-    private async handleOtherErrors(receipts: ErrorReceipt[]) {
-        for (const receipt of receipts) {
-            this.logger.error({
-                msg: "Receipt for ticket has other error. Saving to ticket table",
-                errorType: receipt.details?.error,
-                receiptId: receipt.receiptId,
-                ticketUuid: receipt.ticketUuid,
-            });
-        }
-        await this.tickets.putMany(
-            receipts.map(r => ({
-                type: "ErrorReceipt",
-                uuid: v4(),
-                expoPushToken: r.expoPushToken,
-                message: r.message,
-                receiptId: r.receiptId,
-                status: r.status,
-                timestamp: new Date().toISOString(),
-                details: {
-                    error: r.details?.error,
-                },
-            }))
-        );
-        await this.tickets.deleteManySuccessTickets(
-            receipts.map(r => r.ticketUuid)
-        );
     }
 }

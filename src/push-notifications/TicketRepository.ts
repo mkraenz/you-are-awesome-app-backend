@@ -1,4 +1,4 @@
-import { ExpoPushErrorReceipt, ExpoPushErrorTicket } from "expo-server-sdk";
+import { ExpoPushErrorTicket } from "expo-server-sdk";
 import { chunk } from "lodash";
 import { ILogger } from "../util/ILogger";
 
@@ -18,15 +18,28 @@ export interface ErrorTicket extends ExpoPushErrorTicket {
     __debug?: never;
 }
 
-interface ErrorReceipt extends ExpoPushErrorReceipt {
-    type: "ErrorReceipt";
+type ErrorReceiptBase<T extends string> = {
+    type: `${T}Receipt`;
     expoPushToken: string;
     uuid: string;
     timestamp: string;
-    __debug?: never;
-}
+    message: string;
+    receiptId?: string;
+};
 
-export type Ticket = SuccessTicket | ErrorTicket;
+export type DeviceNotRegisteredReceipt =
+    ErrorReceiptBase<"DeviceNotRegistered">;
+type UnknownErrorReceipt = ErrorReceiptBase<"UnknownError">;
+type InvalidCredentialsReceipt = ErrorReceiptBase<"InvalidCredentials">;
+type MessageTooBigReceipt = ErrorReceiptBase<"MessageTooBig">;
+type MessageRateExceededReceipt = ErrorReceiptBase<"MessageRateExceeded">;
+export type Ticket =
+    | SuccessTicket
+    | DeviceNotRegisteredReceipt
+    | UnknownErrorReceipt
+    | InvalidCredentialsReceipt
+    | MessageRateExceededReceipt
+    | MessageTooBigReceipt;
 
 export const MAX_DYNAMO_DB_BATCH_SIZE = 25;
 
@@ -37,7 +50,7 @@ export class TicketRepository {
         private readonly logger: ILogger = console
     ) {}
 
-    async putMany(tickets: (Ticket | ErrorReceipt)[]) {
+    async putMany(tickets: Ticket[]) {
         const chunks = chunk(tickets, MAX_DYNAMO_DB_BATCH_SIZE);
         for (const ticketChunk of chunks) {
             await this.dynamoDb
@@ -59,21 +72,10 @@ export class TicketRepository {
     }
 
     async getSuccessTickets() {
-        const tickets = await this.dynamoDb
-            .query({
-                TableName: this.tableName,
-                KeyConditionExpression: "#type = :type",
-                ExpressionAttributeValues: {
-                    ":type": "SuccessTicket",
-                },
-                ExpressionAttributeNames: {
-                    "#type": "type",
-                },
-            })
-            .promise();
-        return tickets.Items as SuccessTicket[];
+        return this.getMany("SuccessTicket");
     }
 
+    // TODO #535 delete
     async deleteManySuccessTickets(uuids: string[]) {
         if (uuids.length === 0) {
             this.logger.log({ msg: "No tickets to delete" });
@@ -102,5 +104,51 @@ export class TicketRepository {
             })
             .promise();
         this.logger.log({ msg: "successfully removed tickets", uuids });
+    }
+
+    async deleteMany(uuids: string[], type: Ticket["type"]) {
+        if (uuids.length === 0) {
+            this.logger.log({ msg: "No tickets to delete" });
+            return;
+        }
+        if (uuids.length > MAX_DYNAMO_DB_BATCH_SIZE) {
+            throw new Error(
+                `Can only delete <=25 items at a time. uuids: ${uuids.join(
+                    ", "
+                )}`
+            );
+        }
+        this.logger.log({ msg: "start removing tickets", uuids });
+        await this.dynamoDb
+            .batchWrite({
+                RequestItems: {
+                    [this.tableName]: uuids.map(uuid => ({
+                        DeleteRequest: {
+                            Key: {
+                                type,
+                                uuid,
+                            },
+                        },
+                    })),
+                },
+            })
+            .promise();
+        this.logger.log({ msg: "successfully removed tickets", uuids });
+    }
+
+    async getMany<T extends Ticket["type"]>(type: T) {
+        const tickets = await this.dynamoDb
+            .query({
+                TableName: this.tableName,
+                KeyConditionExpression: "#type = :type",
+                ExpressionAttributeValues: {
+                    ":type": type,
+                },
+                ExpressionAttributeNames: {
+                    "#type": "type",
+                },
+            })
+            .promise();
+        return tickets.Items as (Ticket & { type: T })[];
     }
 }

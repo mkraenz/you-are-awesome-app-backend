@@ -59,6 +59,6 @@ export const handler: Handler = async () => {
         const resBodyObj = { message: "Success" };
         return respond(200, resBodyObj);
     } catch (error) {
-        return respond(500, error);
+        return respond(500, error as Error);
     }
 };
