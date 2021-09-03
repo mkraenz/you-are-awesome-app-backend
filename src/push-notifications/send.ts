@@ -61,24 +61,24 @@ export class Body implements IBody {
     }
 }
 
-assertEnvVar(process.env.REGION, "REGION");
 const serviceConfigOptions: ServiceConfigurationOptions = {
-    region: process.env.REGION,
+    region: process.env.AWS_REGION,
     endpoint: process.env.IS_OFFLINE ? "http://localhost:7999" : undefined,
 };
 
 const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
 
 assertEnvVar(process.env.SUBSCRIPTION_TABLE, "SUBSCRIPTION_TABLE");
-const subsTable = process.env.SUBSCRIPTION_TABLE;
 assertEnvVar(process.env.TICKET_TABLE, "TICKET_TABLE");
-const ticketTable = process.env.TICKET_TABLE;
+assertEnvVar(process.env.AWESOME_MESSAGES_URI, "AWESOME_MESSAGES_URI");
 assertEnvVar(
     process.env.SUBSCRIPTIONS_BY_TIME_INDEX,
     "SUBSCRIPTIONS_BY_TIME_INDEX"
 );
+
 const subsByTimeIndex = process.env.SUBSCRIPTIONS_BY_TIME_INDEX;
-assertEnvVar(process.env.AWESOME_MESSAGES_URI, "AWESOME_MESSAGES_URI");
+const subsTable = process.env.SUBSCRIPTION_TABLE;
+const ticketTable = process.env.TICKET_TABLE;
 const awesomeMessagesUri = process.env.AWESOME_MESSAGES_URI;
 
 const subscriptions = new SubscriptionRepository(

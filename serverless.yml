@@ -145,7 +145,6 @@ functions:
                 name: PostPushNotifUnsubscribe
                 description: "Validation model for Deleting Push Notification Subscriptions"
     environment:
-      REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
     iamRoleStatements:
       - Effect: Allow
@@ -154,6 +153,7 @@ functions:
         Resource:
           - Fn::GetAtt: [PushNotifSubsTable, Arn]
 
+  # TODO #535 rename after migration
   sendPushNotif2:
     handler: src/push-notifications/send.handler
     events:
@@ -162,10 +162,10 @@ functions:
           description: Trigger lambda to send push notifications for the event time
           enabled: false # TODO #535 enable
     environment:
-      REGION: ${self:provider.region}
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
       AWESOME_MESSAGES_URI: "https://youareawesomeapp-current-message.s3.eu-central-1.amazonaws.com/messages.json"
+      SUBSCRIPTIONS_BY_TIME_INDEX: ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -235,7 +235,6 @@ functions:
   exportMessagesToS3:
     handler: src/export-messages-to-s3.handler
     environment:
-      REGION: ${self:provider.region}
       GSX2JSON_LAMBDA_ARN:
         Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn] # doesnt work with sls-offline
       BUCKET_NAME: ${self:service}-current-message
