@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import type { Handler } from "aws-lambda";
 import { createTransport } from "nodemailer";
 import { respond, respondError } from "./utils/respond";
 import { getBody, IBody, Report } from "./validation/Body.dto";

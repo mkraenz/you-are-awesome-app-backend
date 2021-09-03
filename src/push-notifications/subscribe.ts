@@ -1,4 +1,4 @@
-import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
+import type { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 import { APIGatewayValidatedProxyEvent } from "../utils/aws";

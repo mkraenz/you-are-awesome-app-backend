@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import type { Handler } from "aws-lambda";
 import { fetchTodaysPostOrFallback } from "./push-notifications/fetchTodaysPostOrFallback";
 import { IPostContent } from "./push-notifications/IPost";
 import { triggerExpoPushNotificationBackend } from "./push-notifications/triggerExpoPushNotificationBackend";

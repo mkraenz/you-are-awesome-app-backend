@@ -21,8 +21,6 @@
     },
     "dependencies": {
         "@googleapis/sheets": "^0.3.0",
-        "aws-lambda": "^1.0.6",
-        "aws-sdk": "^2.972.0",
         "axios": "^0.21.1",
         "class-validator": "^0.12.2",
         "crypto-js": "^4.0.0",
@@ -44,6 +42,8 @@
         "@types/node": "12.x",
         "@types/nodemailer": "^6.4.2",
         "@types/uuid": "^8.3.1",
+        "aws-lambda": "^1.0.6",
+        "aws-sdk": "^2.972.0",
         "del-cli": "^3.0.1",
         "dotenv": "^10.0.0",
         "faker": "^5.5.3",

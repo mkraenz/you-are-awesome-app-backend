@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import type { Handler } from "aws-lambda";
 import Axios from "axios";
 import csvTojson from "csvtojson";
 import { respond } from "../utils/respond";

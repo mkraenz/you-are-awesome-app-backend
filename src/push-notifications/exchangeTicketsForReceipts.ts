@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import type { Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 import Expo from "expo-server-sdk";
