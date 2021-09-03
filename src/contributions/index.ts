@@ -4,7 +4,6 @@ import { respond, respondError } from "../utils/respond";
 import { appendToGSheets, setupGoogleAuth } from "./appendToGSheets";
 import { assertEnv, unescapeNewline } from "./environment";
 import { IMessage } from "./IMessage";
-import { assertMessage } from "./validate";
 
 const env = process.env;
 assertEnv(env);
@@ -13,11 +12,11 @@ export const writeContributionToGsheet: Handler<{
     body: string;
     httpMethod: "POST";
 }> = async event => {
-    console.log("Received body:", event.body);
+    console.log({ msg: "Received body", body: event.body });
 
     try {
+        // validation on API Gateway
         const message = parse<IMessage>(event.body);
-        assertMessage(message);
         const auth = setupGoogleAuth({
             email: env.CONTRIBUTIONS_GOOGLE_EMAIL,
             privateKey: unescapeNewline(env.CONTRIBUTIONS_GOOGLE_PRIVATE_KEY),

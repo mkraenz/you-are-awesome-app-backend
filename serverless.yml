@@ -50,6 +50,12 @@ functions:
       - http:
           path: contributions
           method: post
+          request:
+            schemas:
+              application/json:
+                schema: ${file(src/contributions/contributions.schema.json)}
+                name: PostContributionSchema
+                description: "Validation model for Creating a Contribution"
     environment:
       CONTRIBUTIONS_SPREADSHEET_ID: ${env:CONTRIBUTIONS_SPREADSHEET_ID}
       CONTRIBUTIONS_GOOGLE_EMAIL: ${env:CONTRIBUTIONS_GOOGLE_EMAIL}

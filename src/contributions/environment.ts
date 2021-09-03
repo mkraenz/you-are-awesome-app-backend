@@ -1,4 +1,4 @@
-import { MissingEnvironmentVariable } from "../util/custom.error";
+import { assertEnvVar } from "../validation/assert";
 
 interface Env {
     CONTRIBUTIONS_SPREADSHEET_ID: string;
@@ -7,14 +7,15 @@ interface Env {
 }
 
 export function assertEnv(env: Partial<Env>): asserts env is Env {
-    if (!env.CONTRIBUTIONS_SPREADSHEET_ID)
-        throw new MissingEnvironmentVariable("CONTRIBUTIONS_SPREADSHEET_ID");
-    if (!env.CONTRIBUTIONS_GOOGLE_EMAIL)
-        throw new MissingEnvironmentVariable("CONTRIBUTIONS_GOOGLE_EMAIL");
-    if (!env.CONTRIBUTIONS_GOOGLE_PRIVATE_KEY)
-        throw new MissingEnvironmentVariable(
-            "CONTRIBUTIONS_GOOGLE_PRIVATE_KEY"
-        );
+    assertEnvVar(
+        env.CONTRIBUTIONS_SPREADSHEET_ID,
+        "CONTRIBUTIONS_SPREADSHEET_ID"
+    );
+    assertEnvVar(env.CONTRIBUTIONS_GOOGLE_EMAIL, "CONTRIBUTIONS_GOOGLE_EMAIL");
+    assertEnvVar(
+        env.CONTRIBUTIONS_GOOGLE_PRIVATE_KEY,
+        "CONTRIBUTIONS_GOOGLE_PRIVATE_KEY"
+    );
 }
 
 /** newline char in env var needs transformation
