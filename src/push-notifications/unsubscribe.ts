@@ -34,7 +34,7 @@ export const handler: Handler<
 
         await subs.delete(token);
 
-        return respond(202, { success: true });
+        return respond(200, { success: true });
     } catch (error) {
         return respondError(error as Error);
     }
