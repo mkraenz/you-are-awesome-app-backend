@@ -145,8 +145,8 @@ functions:
   sendPushNotif2:
     handler: src/push-notifications/send.handler
     events:
-      - eventBridge:
-          schedule: rate(1 minute)
+      - schedule:
+          rate: rate(1 minute)
           description: Trigger lambda to send push notifications for the event time
           enabled: false # TODO #535 enable
     environment:
@@ -175,8 +175,8 @@ functions:
     handler: src/push-notifications/exchangeTicketsForReceipts.handler
     description: Read expo push notification success-tickets from dynamodb, exchange tickets for receipts with expo, write back error receipts and delete exchanged success tickets.
     events:
-      - eventBridge:
-          schedule: rate(6 hours)
+      - schedule:
+          rate: rate(6 hours)
           description: Invoke lambda exchangeTicketsForReceipts
           enabled: false # TODO #535 enable
     environment:
@@ -189,13 +189,13 @@ functions:
         Resource:
           - Fn::GetAtt: [PushNotifTicketsTable, Arn]
 
-  # Dnr = device not registered. had to shorten for iam roles
+  # Dnr = device not registered. had to shorten for iam
   handleDnrReceipts:
     handler: src/push-notifications/handleDeviceNotRegisteredReceipts.handler
     description: Read DeviceNotRegistered receipts from dynamodb and delete corresponding subscriptions. Finally delete handled receipts.
     events:
-      - eventBridge:
-          schedule: rate(1 day)
+      - schedule:
+          rate: rate(1 day)
           description: Invoke lambda handleDeviceNotRegisteredReceipts
           enabled: false # TODO #535 enable
     environment:
