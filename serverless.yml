@@ -121,7 +121,7 @@ functions:
             schemas:
               application/json:
                 schema: ${file(src/push-notifications/subscribe.schema.json)}
-                name: PutPushNotifSubscription
+                name: PutPushNotifSubscriptionv2
                 description: "Validation model for Creating or Updating Push Notification Subscriptions"
     environment:
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
