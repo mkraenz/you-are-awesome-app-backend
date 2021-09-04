@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ### Lambda: v2.0 Subscribe to Push Notifications
 
-POST http://localhost:3000/prod/push-notifications/subscribe
+PUT http://localhost:3000/prod/push-notifications/subscribe
 Content-Type: application/json
 
 {
