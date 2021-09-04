@@ -39,7 +39,7 @@ functions:
             schemas:
               application/json:
                 schema: ${file(src/report-inappropriate/schema.json)}
-                name: Report
+                name: PostReportSchema
                 description: "Validation model to report inappropriate content"
     environment:
       SMTP_HOST: ${env:SMTP_HOST}
