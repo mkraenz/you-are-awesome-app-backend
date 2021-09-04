@@ -116,7 +116,7 @@ functions:
     events:
       - http:
           path: push-notifications/subscribe
-          method: post # TODO #535 change to put for indicating that multiple puts will overwrite existing
+          method: put
           request:
             schemas:
               application/json:
@@ -160,7 +160,7 @@ functions:
       - schedule:
           rate: rate(1 minute)
           description: Trigger lambda to send push notifications for the event time
-          enabled: false # TODO #535 enable
+          enabled: true
     environment:
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
@@ -190,7 +190,7 @@ functions:
       - schedule:
           rate: rate(6 hours)
           description: Invoke lambda exchangeTicketsForReceipts
-          enabled: false # TODO #535 enable
+          enabled: true
     environment:
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
     iamRoleStatements:
@@ -209,7 +209,7 @@ functions:
       - schedule:
           rate: rate(1 day)
           description: Invoke lambda handleDeviceNotRegisteredReceipts
-          enabled: false # TODO #535 enable
+          enabled: true
     environment:
       SUBSCRIPTION_TABLE: ${self:resources.Resources.PushNotifSubsTable.Properties.TableName}
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
