@@ -75,6 +75,10 @@ assertEnvVar(
     process.env.SUBSCRIPTIONS_BY_TIME_INDEX,
     "SUBSCRIPTIONS_BY_TIME_INDEX"
 );
+assertEnvVar(
+    process.env.EXPO_PUSH_NOTIFICATIONS_API_TOKEN,
+    "EXPO_PUSH_NOTIFICATIONS_API_TOKEN"
+);
 
 const subsByTimeIndex = process.env.SUBSCRIPTIONS_BY_TIME_INDEX;
 const subsTable = process.env.SUBSCRIPTION_TABLE;
@@ -86,7 +90,9 @@ const subscriptions = new SubscriptionRepository(
     subsTable,
     subsByTimeIndex
 );
-const expo = new Expo();
+const expo = new Expo({
+    accessToken: process.env.EXPO_PUSH_NOTIFICATIONS_API_TOKEN,
+});
 const expoAdapter = new ExpoSendAdapter(expo);
 const awesomeMessages = new AwesomeMessagesService(awesomeMessagesUri);
 const tickets = new TicketRepository(docClient, ticketTable);

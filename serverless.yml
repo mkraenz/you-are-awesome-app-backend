@@ -167,6 +167,7 @@ functions:
       TICKET_TABLE: ${self:resources.Resources.PushNotifTicketsTable.Properties.TableName}
       AWESOME_MESSAGES_URI: "https://youareawesomeapp-current-message.s3.eu-central-1.amazonaws.com/messages.json"
       SUBSCRIPTIONS_BY_TIME_INDEX: ${self:resources.Resources.PushNotifSubsTable.Properties.GlobalSecondaryIndexes.0.IndexName}
+      EXPO_PUSH_NOTIFICATIONS_API_TOKEN: ${env:EXPO_PUSH_NOTIFICATIONS_API_TOKEN}
     iamRoleStatements:
       - Effect: Allow
         Action:
