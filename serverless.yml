@@ -110,6 +110,7 @@ functions:
     environment:
       FETCH_POSTS_URI: ${env:FETCH_POSTS_URI}
       SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
+      ENABLED: false
 
   subscribePushNotif:
     handler: src/push-notifications/subscribe.handler

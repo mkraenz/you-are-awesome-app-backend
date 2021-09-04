@@ -11,6 +11,10 @@ export const handler: Handler<{ body: string; httpMethod: "POST" }> = async (
     context,
     callback
 ) => {
+    if (process.env.ENABLED === "false") {
+        return respond(200, { message: "Success", sendingEnabled: false });
+    }
+
     try {
         const body: { token: string } = JSON.parse(event.body);
         const encryptedToken = validateTokenBody(body.token);
