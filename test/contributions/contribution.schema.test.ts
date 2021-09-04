@@ -1,5 +1,5 @@
 import { matchers } from "jest-json-schema";
-import { range } from "lodash";
+import { padStart, range } from "lodash";
 import { v4 } from "uuid";
 import schema from "../../src/contributions/contributions.schema.json";
 
@@ -21,15 +21,14 @@ it("validates", () => {
 });
 
 it("validates all dates in 2021 and some nonsensical dates", () => {
+    const to2Digits = (n: number) => padStart(n.toString(), 2, "0");
     range(1, 13).forEach(month => {
         range(1, 32).forEach(day => {
             expect({
                 id: v4(),
                 country: "my country",
                 author: "my-author",
-                isodate: `2021-${month < 10 ? `0${month}` : month}-${
-                    day < 10 ? `0${day}` : day
-                }`,
+                isodate: `2021-${to2Digits(month)}-${to2Digits(day)}`,
                 text: "my-text",
             }).toMatchSchema(jestCompatibleSchema);
         });
