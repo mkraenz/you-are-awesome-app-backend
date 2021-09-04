@@ -2,6 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 import { readFileSync } from "fs";
 import { parse } from "../src/utils/parse";
+import { assertEnvVar } from "../src/validation/assert";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const main = async () => {
             minute: params.minute,
             hour: params.hour,
         });
+        assertEnvVar(process.env.SUBSCRIBE_URL, "SUBSCRIBE_URL");
         await axios.put(process.env.SUBSCRIBE_URL, params, {
             headers: {
                 "Content-Type": "application/json",
