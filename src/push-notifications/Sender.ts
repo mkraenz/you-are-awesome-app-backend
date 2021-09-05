@@ -35,7 +35,7 @@ export class Sender {
             this.logger.log({
                 msg: `sending chunk`,
                 chunk: i + 1,
-                maxChunk: notificationChunk.length,
+                maxChunk: notificationChunks.length,
                 time,
                 allNotifications: notifications.length,
             });
