@@ -34,7 +34,6 @@ class Body implements IBody {
     }
 }
 
-// https://github.com/aws/aws-sdk-js/issues/1635#issuecomment-316486871
 const serviceConfigOptions: ServiceConfigurationOptions = {
     region: process.env.AWS_REGION,
     endpoint: process.env.IS_OFFLINE ? "http://localhost:7999" : undefined,

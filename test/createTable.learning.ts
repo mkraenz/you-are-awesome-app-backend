@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 
 export const dropTable = async (dynamoDb: AWS.DynamoDB, tableName: string) => {
     await dynamoDb
@@ -179,29 +178,3 @@ const deleteItem = async (
         .promise();
     console.log(updated);
 };
-
-const main = async () => {
-    // https://github.com/aws/aws-sdk-js/issues/1635#issuecomment-316486871
-    const serviceConfigOptions: ServiceConfigurationOptions = {
-        region: "us-west-2",
-        endpoint: "http://localhost:7999", // disable
-    };
-
-    // control plane -> managing tables, indices
-    const dynamodb = new AWS.DynamoDB(serviceConfigOptions);
-    // data plane -> managing items inside tables
-    const docClient = new AWS.DynamoDB.DocumentClient(serviceConfigOptions);
-
-    const TableName = "PushNotificationSubs-prod";
-    await dropTable(dynamodb, TableName);
-    await createSubsTable(dynamodb, TableName);
-    await createGsiSubsByTime(dynamodb, TableName, "TimeIndex");
-    // await createTable();
-    // await createItem();
-    // await getItem();
-    // await updateItem();
-    // await revertUpdateItem();
-    // await deleteItem();
-};
-
-// main();
