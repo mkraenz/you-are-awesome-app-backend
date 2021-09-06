@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "incremental": true,
+        "tsBuildInfoFile": "./.build/tsconfig.tsbuildinfo",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "target": "es5",
