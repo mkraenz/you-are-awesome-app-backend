@@ -1,10 +1,10 @@
 import type { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
-import { APIGatewayValidatedProxyEvent } from "../utils/aws";
-import { parse } from "../utils/parse";
-import { respond, respondError } from "../utils/respond";
-import { assertEnvVar, assertToken } from "../validation/assert";
+import { APIGatewayValidatedProxyEvent } from "../util/aws";
+import { parse } from "../util/parse";
+import { respond, respondError } from "../util/respond";
+import { assertEnvVar, assertToken } from "../util/assert";
 import { SubscriptionRepository } from "./SubscriptionRepository";
 
 interface IBody {

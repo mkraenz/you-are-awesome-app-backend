@@ -1,8 +1,8 @@
 import type { Handler } from "aws-lambda";
 import Axios from "axios";
 import csvTojson from "csvtojson";
-import { respond } from "../utils/respond";
-import { assertEnvVar } from "../validation/assert";
+import { respond } from "../util/respond";
+import { assertEnvVar } from "../util/assert";
 
 export const handler: Handler<{
     httpMethod: "GET";

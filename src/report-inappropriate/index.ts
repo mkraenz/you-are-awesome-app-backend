@@ -1,8 +1,8 @@
 import type { Handler } from "aws-lambda";
 import { createTransport } from "nodemailer";
-import { parse } from "../utils/parse";
-import { respond, respondError } from "../utils/respond";
-import { EmailConfig, getEmailConfig } from "../validation/EmailConfig.dto";
+import { parse } from "../util/parse";
+import { respond, respondError } from "../util/respond";
+import { EmailConfig, getEmailConfig } from "./EmailConfig.dto";
 
 export interface IBody {
     messageId: string;

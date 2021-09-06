@@ -1,6 +1,6 @@
 import type { Handler } from "aws-lambda";
-import { parse } from "../utils/parse";
-import { respond, respondError } from "../utils/respond";
+import { parse } from "../util/parse";
+import { respond, respondError } from "../util/respond";
 import { appendToGSheets, setupGoogleAuth } from "./appendToGSheets";
 import { assertEnv, unescapeNewline } from "./environment";
 import { IMessage } from "./IMessage";

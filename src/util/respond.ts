@@ -1,4 +1,4 @@
-import { FailedParsing, InvalidArgument } from "../util/custom.error";
+import { FailedParsing, InvalidArgument } from "./custom.error";
 
 export const respond = (statusCode: number, body: object | Error) => {
     if (body instanceof Error) {

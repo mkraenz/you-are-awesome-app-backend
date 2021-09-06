@@ -1,8 +1,8 @@
 import type { Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
-import { respond } from "../utils/respond";
-import { assertEnvVar } from "../validation/assert";
+import { respond } from "../util/respond";
+import { assertEnvVar } from "../util/assert";
 import { DeviceNotRegisteredHandler } from "./DeviceNotRegisteredHandler";
 import { handleSuccessTicketEnv } from "./exchangeTicketsForReceipts.env";
 import { SubscriptionRepository } from "./SubscriptionRepository";

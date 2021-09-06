@@ -1,5 +1,5 @@
-import { AwaitedReturnType } from "../../src/utils/AwaitedReturnType";
-import { getEmailConfig } from "../../src/validation/EmailConfig.dto";
+import { AwaitedReturnType } from "../../src/util/AwaitedReturnType";
+import { getEmailConfig } from "../../src/report-inappropriate/EmailConfig.dto";
 
 describe("getEmailConfig()", () => {
     it("returns the config on valid env", async () => {

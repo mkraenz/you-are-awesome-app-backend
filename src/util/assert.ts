@@ -2,7 +2,7 @@ import { Expo } from "expo-server-sdk";
 import {
     InvalidArgument,
     MissingEnvironmentVariable,
-} from "../util/custom.error";
+} from "./custom.error";
 export const assertToken = (expoPushToken: string) => {
     if (!Expo.isExpoPushToken(expoPushToken)) {
         throw new InvalidArgument(
