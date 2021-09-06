@@ -21,6 +21,13 @@ export class DeviceNotRegisteredHandler {
         const receipts = await this.tickets.getMany(
             "DeviceNotRegisteredReceipt"
         );
+        const result = { receiptsAndTickets: receipts.length };
+        if (receipts.length === 0) {
+            this.logger.log({
+                msg: "No DeviceNotRegisteredReceipts found. Skipping",
+            });
+            return result;
+        }
         this.logger.log({
             msg: "found DeviceNotRegistered receipts",
             receipts: receipts.length,
@@ -30,8 +37,6 @@ export class DeviceNotRegisteredHandler {
         for (const chunk of tokenChunks) {
             await this.handleChunk(chunk);
         }
-
-        const result = { receiptsAndTickets: receipts.length };
         this.logger.log({
             ...result,
             msg: "Handled DeviceNotRegistered receipts. Deleted subscriptions and receipts",
