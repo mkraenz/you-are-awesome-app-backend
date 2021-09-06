@@ -1,5 +1,5 @@
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
-import { assertToken } from "../validation/assert";
+import { assertToken } from "../util/assert";
 
 // see https://github.com/expo/expo-server-sdk-node
 // and https://docs.expo.io/versions/latest/guides/push-notifications

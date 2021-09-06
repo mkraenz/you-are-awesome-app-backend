@@ -2,7 +2,7 @@ import type { Handler } from "aws-lambda";
 import AWS from "aws-sdk";
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service";
 import Expo from "expo-server-sdk";
-import { respond } from "../utils/respond";
+import { respond } from "../util/respond";
 import { handleSuccessTicketEnv } from "./exchangeTicketsForReceipts.env";
 import { ExpoReceiptAdapter } from "./ExpoReceiptsAdapter";
 import { TicketExchange } from "./TicketExchange";

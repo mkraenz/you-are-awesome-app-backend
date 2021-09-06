@@ -1,7 +1,7 @@
 import MockDate from "mockdate";
 import { TicketExchange } from "../../src/push-notifications/TicketExchange";
 import { mockLogger } from "../../src/util/ILogger";
-import { expectExtension } from "../utils";
+import { expectExtension } from "../util";
 
 afterEach(() => {
     MockDate.reset();

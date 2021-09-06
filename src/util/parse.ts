@@ -1,4 +1,4 @@
-import { FailedParsing } from "../util/custom.error";
+import { FailedParsing } from "./custom.error";
 
 export const parse = <T>(stringifiedObj: string): T => {
     try {

@@ -1,4 +1,4 @@
-import { assertEnvVar } from "../validation/assert";
+import { assertEnvVar } from "../util/assert";
 
 interface Env {
     CONTRIBUTIONS_SPREADSHEET_ID: string;

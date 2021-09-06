@@ -1,8 +1,8 @@
 import type { Handler } from "aws-lambda";
 import { Lambda, S3 } from "aws-sdk";
-import { parse } from "./utils/parse";
-import { respond } from "./utils/respond";
-import { assertEnvVar } from "./validation/assert";
+import { parse } from "./util/parse";
+import { respond } from "./util/respond";
+import { assertEnvVar } from "./util/assert";
 
 interface Env {
     AWS_REGION?: string;
