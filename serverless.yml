@@ -67,51 +67,6 @@ functions:
       CONTRIBUTIONS_GOOGLE_EMAIL: ${env:CONTRIBUTIONS_GOOGLE_EMAIL}
       CONTRIBUTIONS_GOOGLE_PRIVATE_KEY: ${env:CONTRIBUTIONS_GOOGLE_PRIVATE_KEY}
 
-  registerPushNotif:
-    handler: src/register-push-notification.handler
-    events:
-      - http:
-          path: "/push-notifications/register/"
-          method: post
-    environment:
-      CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
-      PUSH_NOTIFICATIONS_BACKEND_URI:
-        Fn::Join:
-          - ""
-          - - "https://"
-            - Ref: ApiGatewayRestApi
-            - ".execute-api."
-            - ${self:provider.region}
-            - ".amazonaws.com/"
-            - ${self:provider.stage}
-            - /push-notifications/send/
-            - ${env:SEND_PUSH_NOTIF_ENDPOINT}/
-      EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
-      HASH_PASSWORD: ${env:HASH_PASSWORD}
-      SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
-
-  unregisterPushNotif:
-    handler: src/unregister-push-notification.handler
-    events:
-      - http:
-          path: "/push-notifications/unregister/"
-          method: post
-    environment:
-      CRON_JOB_NAME_PREFIX: "yaa-push-notifications-"
-      EASY_CRON_API_TOKEN: ${env:EASY_CRON_API_TOKEN}
-      HASH_PASSWORD: ${env:HASH_PASSWORD}
-
-  sendPushNotif:
-    handler: src/send-push-notification.handler
-    events:
-      - http:
-          path: "/push-notifications/send/${env:SEND_PUSH_NOTIF_ENDPOINT}/"
-          method: post
-    environment:
-      FETCH_POSTS_URI: ${env:FETCH_POSTS_URI}
-      SYMMETRIC_ENCRYPTION_KEY: ${env:SYMMETRIC_ENCRYPTION_KEY}
-      ENABLED: false
-
   subscribePushNotif:
     handler: src/push-notifications/subscribe.handler
     events:
@@ -154,7 +109,6 @@ functions:
         Resource:
           - Fn::GetAtt: [PushNotifSubsTable, Arn]
 
-  # TODO #535 rename after migration
   sendPushNotif2:
     handler: src/push-notifications/send.handler
     events:

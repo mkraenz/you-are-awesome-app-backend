@@ -23,7 +23,6 @@
         "@googleapis/sheets": "^0.3.0",
         "axios": "^0.21.1",
         "class-validator": "^0.12.2",
-        "crypto-js": "^4.0.0",
         "csvtojson": "^2.0.10",
         "expo-server-sdk": "^3.6.0",
         "lodash": "^4.17.21",
@@ -32,7 +31,6 @@
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.77",
-        "@types/crypto-js": "^4.0.1",
         "@types/csvtojson": "^2.0.0",
         "@types/faker": "^5.5.6",
         "@types/jest": "^26.0.23",

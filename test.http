@@ -1,10 +1,3 @@
-## easycron: Add cronjob
-GET https://www.easycron.com/rest/add?token=MY_TOKEN_HERE&cron_expression=30 22 * * *&http_method=POST&posts=%7B%22token%22%3A%20%22ExponentPushToken%51234567890%5D%22%7D&url=SEND_PUSH_NOTIFICATION_URI
-
-### easycron: get cronjobs
-
-GET https://www.easycron.com/rest/list?token=MY_TOKEN_HERE
-
 ### Lambda: Report Inappropriate
 
 POST http://localhost:3000/prod/reportinappropriate
@@ -12,26 +5,7 @@ Content-Type: application/json
 
 {"messageId":"test messsage id", "reason": "bad content", "comment": "testme"}
 
-### Lambda: Register Push Notifications
-POST http://localhost:3000/prod/push-notifications/register
-Content-Type: application/json
-
-{
-    "token": "ExponentPushToken[123456]",
-    "hour": 4,
-    "minute": 50
-}
-
-### Lambda: Unregister Push Notifications 
-# Note: First register with .../register
-POST http://localhost:3000/prod/push-notifications/unregister
-Content-Type: application/json
-
-{
-    "token": "ExponentPushToken[123456]"
-}
-
-### Lambda: v2.0 Subscribe to Push Notifications
+### Lambda: Subscribe to Push Notifications
 
 PUT http://localhost:3000/prod/push-notifications/subscribe
 Content-Type: application/json
@@ -42,26 +16,13 @@ Content-Type: application/json
     "minute": 51
 }
 
-### Lambda: v2.0 Unsubscribe from Push Notifications
+### Lambda: Unsubscribe from Push Notifications
 POST http://localhost:3000/prod/push-notifications/unsubscribe
 Content-Type: application/json
 
 {
     "token": "ExponentPushToken[98765]"
 }
-
-
-### Lambda: send push notification
-POST http://localhost:3000/prod/push-notifications/send
-Content-Type: application/json
-
-{ 
-    "token": "123456=="
-}
-
-### Lambda: gsx2json Google Sheets to JSON
-
-GET http://localhost:3000/prod/gsx2json/?id=1n3mhIrBpeAEQVKcparkZPdCnleYFRr06jo80aUtcHgI&sheet=1&columns=false
 
 ### Lambda: write contribution to Google Sheets
 POST http://localhost:3000/prod/contributions
