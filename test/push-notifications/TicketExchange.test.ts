@@ -147,7 +147,7 @@ it("replaces success tickets by error receipts", async () => {
             type: "DeviceNotRegisteredReceipt",
             expoPushToken: "ExponentPushToken[123]",
             uuid: expectExtension.uuidV4,
-            timestamp: "2021-01-01T00:33:19.000Z", // TODO #535 which time should this be? original ticket, or save time
+            timestamp: "2021-01-01T00:33:19.000Z",
             message:
                 '\\"ExponentPushToken[123]\\" is not a registered push notification recipient',
             receiptId: "my-receipt-1",
