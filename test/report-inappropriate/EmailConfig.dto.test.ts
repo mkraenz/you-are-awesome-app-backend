@@ -1,5 +1,5 @@
-import { AwaitedReturnType } from "../../src/util/AwaitedReturnType";
 import { getEmailConfig } from "../../src/report-inappropriate/EmailConfig.dto";
+import { AwaitedReturnType } from "../../src/util/AwaitedReturnType";
 
 describe("getEmailConfig()", () => {
     it("returns the config on valid env", async () => {
@@ -38,7 +38,7 @@ describe("getEmailConfig()", () => {
             FROM_ADDRESS: "noreply@example.com",
         };
 
-        expect(getEmailConfig(env)).rejects.toThrow(
+        await expect(getEmailConfig(env)).rejects.toThrow(
             "Missing env var. Required: SMTP_HOST, SMTP_PORT, SMTP_USE_SSL, SMTP_USERNAME, SMTP_PASSWORD, TO_EMAILS_CSV, FROM_ADDRESS"
         );
     });

@@ -69,9 +69,9 @@ it("falls back to [] if no subscriptions found for given time", async () => {
     expect(subs2).toEqual([]);
 });
 
-it("rejects to get all given time if index name not provided at setup", () => {
+it("rejects to get all given time if index name not provided at setup", async () => {
     const subs = new SubscriptionRepository(docClient, TableName);
-    expect(() => subs.getManyByTime("01:23")).rejects.toThrow(MissingSetup);
+    await expect(subs.getManyByTime("01:23")).rejects.toThrow(MissingSetup);
 });
 
 it("saves a subscription and deletes it", async () => {
@@ -85,16 +85,16 @@ it("saves a subscription and deletes it", async () => {
 
     await subs.delete("ExponentPushToken[123]");
 
-    expect(() => subs.get("ExponentPushToken[123]")).rejects.toThrow(
+    await expect(subs.get("ExponentPushToken[123]")).rejects.toThrow(
         /No subscription found/
     );
 });
 
-it("rejects when bulk deleting more than 25 items in a single call", () => {
+it("rejects when bulk deleting more than 25 items in a single call", async () => {
     const tokens = range(0, 26).map(i => `ExponentPushToken[${i}]`);
     const subs = new SubscriptionRepository(docClient, TableName);
 
-    expect(() => subs.deleteMany(tokens)).rejects.toThrow(
+    await expect(subs.deleteMany(tokens)).rejects.toThrow(
         /Can only delete <=25 items at a time/
     );
 });

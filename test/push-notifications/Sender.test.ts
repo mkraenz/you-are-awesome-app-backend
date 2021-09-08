@@ -173,6 +173,7 @@ it("asserts awesome messages are not too large for sending with push notificatio
         ticketRepo,
         mockLogger
     );
-
-    expect(() => sender.send("17:28")).rejects.toThrow("//");
+    await expect(sender.send("17:28")).rejects.toThrow(
+        /Message size is 4045 bytes. Limit is 2000 bytes/
+    );
 });

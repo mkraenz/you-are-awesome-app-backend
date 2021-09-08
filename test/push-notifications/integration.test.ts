@@ -162,7 +162,7 @@ it("DeviceNotRegistered Path: subscribe > send notification > exchange success t
     await deviceNotRegisteredHandler.unsubscribeAffectedExpoPushTokens();
 
     expect(await tickets.getMany("DeviceNotRegisteredReceipt")).toEqual([]);
-    expect(() => subs.get(expoPushToken)).rejects.toThrow(
+    await expect(subs.get(expoPushToken)).rejects.toThrow(
         /No subscription found/
     );
 });
