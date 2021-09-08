@@ -1,26 +1,10 @@
 import type { Handler } from "aws-lambda";
 import { S3 } from "aws-sdk";
-import { gsheetsToMessages } from "./messages/gsheetsToMessages";
-import { assertEnvVar } from "./util/assert";
-import { respond } from "./util/respond";
+import { gsheetsToMessages } from "../messages/gsheetsToMessages";
+import { respond } from "../util/respond";
+import { exportMessagesToS3Env } from "./env.setup";
 
-interface Env {
-    AWS_REGION?: string;
-    BUCKET_NAME: string;
-    MESSAGES_SPREADSHEET_PUBLIC_ID: string;
-}
-
-function assertEnv(env: Partial<Env>): asserts env is Env {
-    assertEnvVar(
-        env.MESSAGES_SPREADSHEET_PUBLIC_ID,
-        "MESSAGES_SPREADSHEET_PUBLIC_ID"
-    );
-    assertEnvVar(env.BUCKET_NAME, "BUCKET_NAME");
-}
-
-const env = process.env;
-assertEnv(env);
-
+const env = exportMessagesToS3Env;
 const s3 = new S3({ region: env.AWS_REGION });
 
 export const handler: Handler = async () => {

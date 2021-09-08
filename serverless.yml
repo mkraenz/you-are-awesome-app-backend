@@ -182,32 +182,16 @@ functions:
         Resource:
           - Fn::GetAtt: [PushNotifSubsTable, Arn]
 
-  # only called via RPC => no events
-  gsx2json:
-    handler: src/gsx2json/index.handler
+  exportMessagesToS3:
+    handler: src/messages/export-to-s3.handler
     environment:
       MESSAGES_SPREADSHEET_PUBLIC_ID: "2PACX-1vR83yDqRha4RaBeqzPnX6xh1I9PqndL2E_p8Ks9AzUp7KFae5fxlgWxDcVN4f8G41x3BtKQwz5M_ujM"
-
-  exportMessagesToS3:
-    handler: src/export-messages-to-s3.handler
-    environment:
-      GSX2JSON_LAMBDA_ARN:
-        Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn] # doesnt work with sls-offline
       BUCKET_NAME: ${self:service}-current-message
     events:
-      # enable for dev
-      # - http:
-      #     path: "/manually-trigger-export-to-s3/"
-      #     method: get
       - schedule:
           rate: rate(1 day)
           description: "Invoke export of Awesome Messages to S3 ${self:service}-current-messages"
     iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - lambda:InvokeFunction
-        Resource:
-          - Fn::GetAtt: [Gsx2jsonLambdaFunction, Arn]
       - Effect: Allow
         Action:
           - s3:PutObject*
