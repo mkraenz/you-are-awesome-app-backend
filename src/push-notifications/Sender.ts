@@ -1,3 +1,4 @@
+import { assertByteSizeBelow } from "../util/assert";
 import { ILogger } from "../util/ILogger";
 import { AwesomeMessagesService } from "./AwesomeMessagesService";
 import { ExpoSendAdapter } from "./ExpoSendAdapter";
@@ -29,6 +30,7 @@ export class Sender {
         }
         this.logger.log({ msg: `found subs to send`, subs: subs.length, time });
         const message = await this.awesomeMessages.getTodaysMessage();
+        assertByteSizeBelow(2000, message); // enforced by contributions.schema.json
         const notifications = this.expo.subsToMessages(subs, message);
         const notificationChunks = this.expo.chunkNotifications(notifications);
         for (const [i, notificationChunk] of notificationChunks.entries()) {

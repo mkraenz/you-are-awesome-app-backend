@@ -117,9 +117,7 @@ it("does nothing if no subscriptions for given time in database", async () => {
     expect(ticketRepo.putMany).not.toHaveBeenCalled();
 });
 
-// TODO #535 follow-up. Implement. Currently fails.
-// https://clevertap.com/blog/what-are-push-notification-character-limits/ TODO find better source
-it("limits message size to about 65 chars for the title and 240 in the body if above that size", async () => {
+it("asserts awesome messages are not too large for sending with push notifications", async () => {
     // https://docs.expo.dev/push-notifications/sending-notifications/#push-receipt-errors
     // MessageTooBig: the total notification payload was too large. On Android and iOS the total payload must be at most 4096 bytes.
 
@@ -176,14 +174,5 @@ it("limits message size to about 65 chars for the title and 240 in the body if a
         mockLogger
     );
 
-    await sender.send("17:28");
-
-    expect(expoMock.sendNotifications).toHaveBeenCalledWith([
-        {
-            to: "ExponentPushToken[384]",
-            sound: "default",
-            title: veryLongMessage.slice(0, 65),
-            body: "TODO Phil from US",
-        },
-    ]);
+    expect(() => sender.send("17:28")).rejects.toThrow("//");
 });
