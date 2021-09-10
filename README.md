@@ -4,7 +4,7 @@ Awesome!
 
 ## Architecture Diagram
 
-[diagram on gdrive](https://drive.google.com/file/d/16q4tDXvDJJmJJllpi_lgGpntYiB_nEjh/view?usp=sharing)
+[diagram on gdrive](https://app.diagrams.net/#G16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_)
 
 ## Functions
 
