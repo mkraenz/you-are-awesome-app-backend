@@ -9,4 +9,5 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+    # fixes permission error inside the container
     user: root
