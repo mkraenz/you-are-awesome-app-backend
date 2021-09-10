@@ -19,10 +19,9 @@ Awesome!
 
 WARNING: Sending push notifications is in a separate deploy command, in order to hide the URI.
 
-- Ensure a `.env` file exists with environment variables set properly. (see password manager)
+- Ensure a `.env` file exists with environment variables set properly. (see password manager). Also check the `.env.sample` file in this repo.
 - `yarn deploy:test`
-- Test whether email sending works by executing `post.http`
-- Also take a look at `secret.http`
+- Test with `post.http` and `secret.http`. ([VS Code extension for HTTP requests](https://marketplace.visualstudio.com/items?itemName=humao.rest-client))
 - on success: `yarn deploy`
 
 ## Development
@@ -61,10 +60,6 @@ Access from AWS NoSQL Workbench:
 - Open DynamoDb Workbench -> Operations Builder -> Add connection -> DynamoDB local -> port 7999
 - create a table with the script `create-table.ts` (adjust code accordingly)
 - Select the Table to see its Items
-
-#### Issues
-
-The `docker-compose.yml` from AWS Docs errored when trying to actually connect. It's caused by a permission issue inside the container. Added `user: root` to fix it.
 
 ## Links
 
