@@ -4,8 +4,8 @@ Awesome!
 
 ## Architecture Diagram
 
-[public read-only: diagram on gdrive](https://drive.google.com/file/d/16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_/view?usp=sharing)
-[diagram on gdrive](https://app.diagrams.net/#G16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_)
+- [public read-only: diagram on gdrive](https://drive.google.com/file/d/16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_/view?usp=sharing)  
+- [read-write diagram on gdrive](https://app.diagrams.net/#G16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_)
 
 ## Functions
 
