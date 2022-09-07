@@ -27,9 +27,9 @@ export class ExpoSendAdapter {
         }));
     }
 
-    public chunkNotifications = this.expo.chunkPushNotifications.bind(
-        this.expo
-    );
+    public chunkNotifications(messages: ExpoPushMessage[]) {
+        return this.expo.chunkPushNotifications(messages)
+    }
 
     /** IMPORTANT: Only use with message chunks. */
     public async sendNotifications(
