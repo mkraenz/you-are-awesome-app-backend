@@ -4,7 +4,7 @@ Awesome!
 
 ## Architecture Diagram
 
-- [public read-only: diagram on gdrive](https://drive.google.com/file/d/16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_/view?usp=sharing)  
+- [public read-only: diagram on gdrive](https://drive.google.com/file/d/16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_/view?usp=sharing)
 - [read-write diagram on gdrive](https://app.diagrams.net/#G16ZhIJ67fQRmhMZnOK5MjE-qJspIQUzP_)
 
 ## Functions
@@ -17,8 +17,6 @@ Awesome!
 - Write contributions to Google Sheets
 
 ## Deployment
-
-WARNING: Sending push notifications is in a separate deploy command, in order to hide the URI.
 
 - Ensure a `.env` file exists with environment variables set properly. (see password manager). Also check the `.env.sample` file in this repo.
 - `yarn deploy:test`
