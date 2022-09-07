@@ -14,13 +14,13 @@ plugins:
   - serverless-plugin-aws-alerts
 
 # only deploy with specific Serverless version
-frameworkVersion: ^2.48.0
+frameworkVersion: ^3.22.0
 configValidationMode: error
 useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   region: ${opt:region, "eu-central-1"}
   stage: ${opt:stage, "prod"}
   profile: serverless
