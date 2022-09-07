@@ -34,22 +34,39 @@ export class Sender {
         const notifications = this.expo.subsToMessages(subs, message);
         const notificationChunks = this.expo.chunkNotifications(notifications);
         for (const [i, notificationChunk] of notificationChunks.entries()) {
-            this.logger.log({
-                msg: `sending chunk`,
-                chunk: i + 1,
-                maxChunk: notificationChunks.length,
-                time,
-                allNotifications: notifications.length,
-            });
-            const tickets = await this.expo.sendNotifications(
-                notificationChunk
-            );
-            this.logger.log({
-                msg: "sent notification chunk",
-                chunk: i + 1,
-                time,
-            });
-            await this.ticketRepository.putMany(tickets);
+            try {
+                this.logger.log({
+                    msg: `sending chunk`,
+                    chunk: i + 1,
+                    maxChunk: notificationChunks.length,
+                    time,
+                    allNotifications: notifications.length,
+                });
+                const tickets = await this.expo.sendNotifications(
+                    notificationChunk
+                );
+                this.logger.log({
+                    msg: "sent notification chunk",
+                    chunk: i + 1,
+                    time,
+                });
+                await this.ticketRepository.putMany(tickets);
+            } catch (error) {
+                const e = error as Error;
+                if (
+                    e.message.includes(
+                        "Expo responded with an error with status code 504"
+                    )
+                ) {
+                    this.logger.error({
+                        msg: "Expo Gateway Error. Logging but otherwise ignoring error",
+                        originalError: JSON.stringify(e),
+                        notificationChunk: JSON.stringify(notificationChunk),
+                    });
+                } else {
+                    throw error;
+                }
+            }
         }
         this.logger.log({
             msg: `finished sending`,
