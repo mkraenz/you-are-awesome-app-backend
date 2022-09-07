@@ -24,9 +24,6 @@ provider:
   region: ${opt:region, "eu-central-1"}
   stage: ${opt:stage, "prod"}
   profile: serverless
-  lambdaHashingVersion: 20201221
-  eventBridge:
-    useCloudFormation: true
 
 functions:
   reportInappropriate:
